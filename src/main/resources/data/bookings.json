@@ -1,0 +1,38 @@
+[
+  {
+    "id": "B501",
+    "userId": "U101",
+    "showId": "S201",
+    "seats": ["A1", "A2"],
+    "totalAmount": 400.00,
+    "status": "Confirmed",
+    "timestamp": "2025-06-01T10:15:30"
+  },
+  {
+    "id": "B502",
+    "userId": "U102",
+    "showId": "S203",
+    "seats": ["C1"],
+    "totalAmount": 220.00,
+    "status": "Confirmed",
+    "timestamp": "2025-06-02T14:20:00"
+  },
+  {
+    "id": "B503",
+    "userId": "U101",
+    "showId": "S205",
+    "seats": ["V1", "V2"],
+    "totalAmount": 400.00,
+    "status": "Confirmed",
+    "timestamp": "2025-06-03T09:00:00"
+  },
+  {
+    "id": "B504",
+    "userId": "U103",
+    "showId": "S202",
+    "seats": ["D4"],
+    "totalAmount": 200.00,
+    "status": "Cancelled",
+    "timestamp": "2025-06-04T11:45:00"
+  }
+]

@@ -1,0 +1,37 @@
+[
+  {
+    "id": "S201",
+    "movieId": "M001",
+    "hallName": "IMAX Hall A",
+    "startTime": "2025-06-15T18:00:00",
+    "bookedSeats": ["A1", "A2", "B3"]
+  },
+  {
+    "id": "S202",
+    "movieId": "M001",
+    "hallName": "Standard Hall 1",
+    "startTime": "2025-06-15T21:00:00",
+    "bookedSeats": []
+  },
+  {
+    "id": "S203",
+    "movieId": "M002",
+    "hallName": "IMAX Hall B",
+    "startTime": "2025-06-16T19:30:00",
+    "bookedSeats": ["C1", "C2", "C3", "C4"]
+  },
+  {
+    "id": "S204",
+    "movieId": "M004",
+    "hallName": "Family Hall",
+    "startTime": "2025-06-16T14:00:00",
+    "bookedSeats": ["A1", "A5"]
+  },
+  {
+    "id": "S205",
+    "movieId": "M006",
+    "hallName": "VIP Hall",
+    "startTime": "2025-06-17T20:00:00",
+    "bookedSeats": ["V1", "V2"]
+  }
+]
