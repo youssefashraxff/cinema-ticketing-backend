@@ -1,0 +1,65 @@
+[
+  {
+    "id": "M001",
+    "title": "Inception",
+    "genre": "Sci-Fi",
+    "language": "English",
+    "durationMinutes": 148,
+    "standardPrice": 200,
+    "rating": 4.8
+  },
+  {
+    "id": "M002",
+    "title": "The Dark Knight",
+    "genre": "Action",
+    "language": "English",
+    "durationMinutes": 152,
+    "standardPrice": 200,
+    "rating": 4.9
+  },
+  {
+    "id": "M003",
+    "title": "Parasite",
+    "genre": "Thriller",
+    "language": "Korean",
+    "durationMinutes": 132,
+    "standardPrice": 180,
+    "rating": 4.6
+  },
+  {
+    "id": "M004",
+    "title": "Spirited Away",
+    "genre": "Animation",
+    "language": "Japanese",
+    "durationMinutes": 125,
+    "standardPrice": 150,
+    "rating": 4.7
+  },
+  {
+    "id": "M005",
+    "title": "Avengers: Endgame",
+    "genre": "Action",
+    "language": "English",
+    "durationMinutes": 181,
+    "standardPrice": 220,
+    "rating": 4.5
+  },
+  {
+    "id": "M006",
+    "title": "Interstellar",
+    "genre": "Sci-Fi",
+    "language": "English",
+    "durationMinutes": 169,
+    "standardPrice": 210,
+    "rating": 4.8
+  },
+  {
+    "id": "M007",
+    "title": "Whiplash",
+    "genre": "Drama",
+    "language": "English",
+    "durationMinutes": 107,
+    "standardPrice": 200,
+    "rating": 4.7
+  }
+]

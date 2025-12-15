@@ -1,0 +1,34 @@
+[
+  {
+    "id": "R901",
+    "movieId": "M001",
+    "userId": "U101",
+    "rating": 5,
+    "comment": "Mind-blowing movie! Nolan is a genius.",
+    "timestamp": "2025-06-15T23:00:00"
+  },
+  {
+    "id": "R902",
+    "movieId": "M001",
+    "userId": "U102",
+    "rating": 4,
+    "comment": "Great visuals, but the plot is confusing.",
+    "timestamp": "2025-06-16T10:00:00"
+  },
+  {
+    "id": "R903",
+    "movieId": "M003",
+    "userId": "U103",
+    "rating": 5,
+    "comment": "An absolute masterpiece. Deserved the Oscar.",
+    "timestamp": "2025-06-17T15:30:00"
+  },
+  {
+    "id": "R904",
+    "movieId": "M005",
+    "userId": "U101",
+    "rating": 4,
+    "comment": "A satisfying conclusion to the saga.",
+    "timestamp": "2025-06-18T12:00:00"
+  }
+]

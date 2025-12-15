@@ -1,5 +1,6 @@
 package com.example.cinematicketingbackend.model;
 
+
 /**
  * Represents a movie show in a specific hall.
  */
@@ -51,3 +52,4 @@ public class Show {
                 '}';
     }
 }
+
