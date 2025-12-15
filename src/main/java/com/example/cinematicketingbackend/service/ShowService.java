@@ -1,18 +1,19 @@
 package com.example.cinematicketingbackend.service;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import com.example.cinematicketingbackend.exception.InvalidHallStatusException;
 import com.example.cinematicketingbackend.exception.InvalidShowTimeException;
+import com.example.cinematicketingbackend.exception.MaxShowsPerHallException;
 import com.example.cinematicketingbackend.exception.MovieNotFoundException;
 import com.example.cinematicketingbackend.exception.ShowOverlapException;
 import com.example.cinematicketingbackend.model.Hall;
 import com.example.cinematicketingbackend.model.Movie;
 import com.example.cinematicketingbackend.model.Show;
 import com.example.cinematicketingbackend.util.TimeUtils;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class ShowService {
     private Map<Hall, List<Show>> hallShowsMap; // Efficient hall-based show lookups
@@ -22,6 +23,7 @@ public class ShowService {
     public ShowService() {
         this.hallShowsMap = new HashMap<>();
     }
+
 
     public void setMovieService(MovieService movieService) {
         this.movieService = movieService;
@@ -38,6 +40,14 @@ public class ShowService {
                     "Cannot schedule show in hall " + hall.getHallId() +
                             ". Hall status is: " + hall.getHallStatus() +
                             ". Only ACTIVE halls can have shows scheduled.");
+        }
+
+        // Check if hall has reached maximum number of shows
+        List<Show> currentHallShows = hallShowsMap.get(hall);
+        int currentShowsCount = (currentHallShows != null) ? currentHallShows.size() : 0;
+
+        if (currentShowsCount >= hall.MaxNumOfShowsPerHall) {
+            throw new MaxShowsPerHallException(hall.getHallId(), hall.MaxNumOfShowsPerHall);
         }
 
         Show newShow = new Show(startTime, finishTime, hall);
@@ -67,6 +77,7 @@ public class ShowService {
 
         // Directly add to map value
         hallShowsMap.get(hall).add(newShow);
+       
     }
 
     public void deleteShow(int movieId, String startTime, Hall hall) {

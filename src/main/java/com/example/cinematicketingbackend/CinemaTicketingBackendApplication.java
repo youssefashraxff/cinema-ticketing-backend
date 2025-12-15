@@ -8,6 +8,7 @@ public class CinemaTicketingBackendApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(CinemaTicketingBackendApplication.class, args);
+        
     }
 
 }

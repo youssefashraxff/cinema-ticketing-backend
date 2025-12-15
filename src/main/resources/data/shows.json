@@ -1,0 +1,112 @@
+[
+  {
+    "startTime": "2025-12-15 10:00",
+    "finishTime": "2025-12-15 12:00",
+    "hall": {
+      "hallId": 1,
+      "capacity": 100,
+      "hallType": "STANDARD",
+      "hallStatus": "ACTIVE",
+      "seatPrice": 50
+    }
+  },
+  {
+    "startTime": "2025-12-15 12:30",
+    "finishTime": "2025-12-15 14:30",
+    "hall": {
+      "hallId": 2,
+      "capacity": 50,
+      "hallType": "VIP",
+      "hallStatus": "ACTIVE",
+      "seatPrice": 150
+    }
+  },
+  {
+    "startTime": "2025-12-15 15:00",
+    "finishTime": "2025-12-15 17:00",
+    "hall": {
+      "hallId": 3,
+      "capacity": 150,
+      "hallType": "IMAX",
+      "hallStatus": "ACTIVE",
+      "seatPrice": 100
+    }
+  },
+  {
+    "startTime": "2025-12-15 17:30",
+    "finishTime": "2025-12-15 19:30",
+    "hall": {
+      "hallId": 4,
+      "capacity": 120,
+      "hallType": "3D",
+      "hallStatus": "ACTIVE",
+      "seatPrice": 80
+    }
+  },
+  {
+    "startTime": "2025-12-15 20:00",
+    "finishTime": "2025-12-15 22:00",
+    "hall": {
+      "hallId": 6,
+      "capacity": 100,
+      "hallType": "STANDARD",
+      "hallStatus": "ACTIVE",
+      "seatPrice": 50
+    }
+  },
+  {
+    "startTime": "2025-12-15 10:30",
+    "finishTime": "2025-12-15 12:30",
+    "hall": {
+      "hallId": 7,
+      "capacity": 50,
+      "hallType": "VIP",
+      "hallStatus": "ACTIVE",
+      "seatPrice": 150
+    }
+  },
+  {
+    "startTime": "2025-12-15 13:00",
+    "finishTime": "2025-12-15 15:00",
+    "hall": {
+      "hallId": 10,
+      "capacity": 70,
+      "hallType": "PREMIUM",
+      "hallStatus": "ACTIVE",
+      "seatPrice": 200
+    }
+  },
+  {
+    "startTime": "2025-12-15 16:00",
+    "finishTime": "2025-12-15 18:00",
+    "hall": {
+      "hallId": 1,
+      "capacity": 100,
+      "hallType": "STANDARD",
+      "hallStatus": "ACTIVE",
+      "seatPrice": 50
+    }
+  },
+  {
+    "startTime": "2025-12-15 18:30",
+    "finishTime": "2025-12-15 20:30",
+    "hall": {
+      "hallId": 3,
+      "capacity": 150,
+      "hallType": "IMAX",
+      "hallStatus": "ACTIVE",
+      "seatPrice": 100
+    }
+  },
+  {
+    "startTime": "2025-12-15 21:00",
+    "finishTime": "2025-12-15 23:00",
+    "hall": {
+      "hallId": 10,
+      "capacity": 70,
+      "hallType": "PREMIUM",
+      "hallStatus": "ACTIVE",
+      "seatPrice": 200
+    }
+  }
+]

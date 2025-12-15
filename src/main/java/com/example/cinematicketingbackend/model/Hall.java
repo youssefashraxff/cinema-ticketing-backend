@@ -8,6 +8,8 @@ public class Hall {
     private int capacity; // Number of seats
     private String hallType; // "STANDARD", "VIP", "IMAX", "3D", "PREMIUM"
     private String hallStatus; // "ACTIVE", "INACTIVE", "MAINTENANCE", "CLOSED"
+    private int SeatPrice;
+    public final int MaxNumOfShowsPerHall=5;
 
     public Hall() {
         this.hallStatus = "ACTIVE"; // Default status
@@ -99,5 +101,13 @@ public class Hall {
                 ", hallType='" + hallType + '\'' +
                 ", hallStatus='" + hallStatus + '\'' +
                 '}';
+    }
+
+    public int getSeatPrice() {
+        return SeatPrice;
+    }
+
+    public void setSeatPrice(int SeatPrice) {
+        this.SeatPrice = SeatPrice;
     }
 }

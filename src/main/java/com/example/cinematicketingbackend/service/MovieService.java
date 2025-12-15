@@ -1,6 +1,11 @@
 package com.example.cinematicketingbackend.service;
 
-import com.example.cinematicketingbackend.exception.DuplicateMovieException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 import com.example.cinematicketingbackend.exception.InvalidRatingException;
 import com.example.cinematicketingbackend.exception.InvalidSearchCriteriaException;
 import com.example.cinematicketingbackend.exception.MovieNotFoundException;
@@ -11,19 +16,16 @@ import com.example.cinematicketingbackend.model.MovieCategoryFlyweight;
 import com.example.cinematicketingbackend.model.Show;
 import com.example.cinematicketingbackend.util.TimeUtils;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
 public class MovieService {
-    private Map<Integer, Movie> movies; 
-    private ShowService showService; 
+    private Map<Integer, Movie> movies;
+    private int nextMovieId;
+    private ShowService showService;
     private HallService hallService; // Reference for hall-based searches
+   
 
     public MovieService() {
         this.movies = new HashMap<>();
+        this.nextMovieId = 1;
     }
 
     public void setShowService(ShowService showService) {
@@ -34,25 +36,22 @@ public class MovieService {
         this.hallService = hallService;
     }
 
-    public void addMovie(String name, int duration, int movieId, String language, double rating,
-                        String type, String description, int ageRestriction) {
+    public Movie createMovie(String name, int duration, String language, double rating, String type, String description, int ageRestriction) {
         // Validate rating
         if (rating < 0 || rating > 10) {
-            throw new InvalidRatingException("Rating must be between 0 and 10. Provided: " + rating);
-        }
-
-        // Check for duplicate movie ID
-        if (movies.containsKey(movieId)) {
-            throw new DuplicateMovieException(movieId);
+            throw new InvalidRatingException("Rating must be between 0 and 10");
         }
 
         // Get or create flyweight category
         MovieCategoryFlyweight category = MovieCategoryFactory.getMovieCategory(type, description, ageRestriction);
 
+        int newMovieId = nextMovieId++;
         // Create movie with flyweight reference
-        Movie movie = new Movie(name, duration, movieId, language, rating, category);
-        movies.put(movieId, movie);
+        Movie movie = new Movie(name, duration, newMovieId, language, rating, category);
+        movies.put(newMovieId, movie);
+        return movie;
     }
+
 
    
     public void deleteMovie(int movieId) {
@@ -249,14 +248,6 @@ public class MovieService {
     return result;
 }
 
-    /**
-     * Search movies by exact duration.
-     * Returns movies with the exact specified duration.
-     *
-     * @param exactDuration Exact duration in minutes
-     * @return List of movies with the exact duration
-     * @throws InvalidSearchCriteriaException if duration is negative
-     */
     public List<Movie> searchMoviesByDuration(int exactDuration) {
         if (exactDuration < 0) {
             throw new InvalidSearchCriteriaException("Duration cannot be negative");
@@ -322,16 +313,4 @@ public class MovieService {
     return result;
 }
 
-    /**
-     * Search movies by minimum rating.
-     * Returns movies with rating >= minRating.
-     *
-     * @param minRating Minimum rating (0.0 to 10.0)
-     * @return List of movies with rating >= minRating
-     * @throws InvalidSearchCriteriaException if rating is invalid
-     */
-    public List<Movie> searchMoviesByRating(double minRating) {
-        return searchMoviesByRating(minRating, 10.0);
-    }
-   
 }
