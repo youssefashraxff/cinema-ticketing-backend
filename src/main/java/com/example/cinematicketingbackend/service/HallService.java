@@ -1,34 +1,26 @@
 package com.example.cinematicketingbackend.service;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 import com.example.cinematicketingbackend.exception.HallInUseException;
 import com.example.cinematicketingbackend.exception.InvalidHallStatusException;
 import com.example.cinematicketingbackend.model.Hall;
 import com.example.cinematicketingbackend.model.Show;
 
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
 
 public class HallService {
-    private Map<Integer, Hall> halls; 
-    private int nextHallId; 
-    private ShowService showService; 
-
-
-    public HallService() {
-        this.halls = new HashMap<>();
-        this.nextHallId = 1; 
-    }
+    private Map<Integer, Hall> halls;
+    private int nextHallId;
+    private ShowService showService;
 
 
     public void setShowService(ShowService showService) {
         this.showService = showService;
     }
-
 
     public Hall createHall(int capacity, String hallType) {
         if (capacity <= 20) {
@@ -45,7 +37,8 @@ public class HallService {
         int newHallId = nextHallId++;
         Hall hall = new Hall(newHallId, capacity, normalizedType);
         halls.put(newHallId, hall);
-       
+        
+
         return hall;
     }
 
@@ -124,12 +117,7 @@ public class HallService {
         return hall;
     }
 
-    /**
-     * Validate hall status value.
-     *
-     * @param status Status to validate
-     * @return true if valid
-     */
+   
     private boolean isValidHallStatus(String status) {
         return status.equals("ACTIVE") || 
                status.equals("INACTIVE") || 
@@ -137,14 +125,7 @@ public class HallService {
                status.equals("CLOSED");
     }
 
-    /**
-     * Validate status transition.
-     * Defines allowed transitions between statuses.
-     *
-     * @param fromStatus Current status
-     * @param toStatus Target status
-     * @return true if transition is allowed
-     */
+   
     private boolean isValidStatusTransition(String fromStatus, String toStatus) {
         // Same status is always allowed
         if (fromStatus.equals(toStatus)) {
@@ -170,25 +151,12 @@ public class HallService {
         }
     }
 
-    /**
-     * Get all active halls.
-     * Returns only halls with status "ACTIVE".
-     *
-     * @return List of active halls
-     */
     public List<Hall> getActiveHalls() {
         return halls.values().stream()
                 .filter(hall -> "ACTIVE".equals(hall.getHallStatus()))
                 .collect(Collectors.toList());
     }
 
-    /**
-     * Get halls by status.
-     * Filters halls by the specified status.
-     *
-     * @param status Status to filter by
-     * @return List of halls with the specified status
-     */
     public List<Hall> getHallsByStatus(String status) {
         if (status == null || status.trim().isEmpty()) {
             return new ArrayList<>();
@@ -204,13 +172,6 @@ public class HallService {
                 .collect(Collectors.toList());
     }
 
-    /**
-     * Check if hall is available for scheduling.
-     * Hall is available if it is ACTIVE.
-     *
-     * @param hallId ID of the hall
-     * @return true if hall is ACTIVE, false otherwise
-     */
     public boolean isHallAvailable(int hallId) {
         Hall hall = halls.get(hallId);
         if (hall == null) {
