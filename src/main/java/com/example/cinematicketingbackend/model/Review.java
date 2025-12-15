@@ -4,15 +4,15 @@ import java.time.LocalDateTime;
 public class Review {
     private String id;
     private String userId;
-    private String movieId;
+    private String movieName;
     private int rating;
     private String comment;
     private LocalDateTime timestamp;
 
-    public Review(String id, String userId, String movieId, int rating, String comment) {
+    public Review(String id, String userId, String movieName, int rating, String comment) {
         this.id = id;
         this.userId = userId;
-        this.movieId = movieId;
+        this.movieName = movieName;
         this.rating = rating;
         this.comment = comment;
         this.timestamp = LocalDateTime.now();
@@ -29,8 +29,8 @@ public class Review {
         this.userId = userId;
     }
 
-    public void setMovieId(String movieId) {
-        this.movieId = movieId;
+    public void setMovieName(String moviename) {
+        this.movieName = moviename;
     }
 
     public void setRating(int rating) {
@@ -53,8 +53,8 @@ public class Review {
         return userId;
     }
 
-    public String getMovieId() {
-        return movieId;
+    public String getMovieName() {
+        return movieName;
     }
 
     public int getRating() {
