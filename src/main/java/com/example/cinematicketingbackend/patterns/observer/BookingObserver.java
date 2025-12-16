@@ -1,4 +1,4 @@
-package com.example.cinematicketingbackend.observer;
+package com.example.cinematicketingbackend.patterns.observer;
 
 import com.example.cinematicketingbackend.model.Booking;
 

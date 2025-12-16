@@ -1,4 +1,4 @@
-package com.example.cinematicketingbackend.decorator;
+package com.example.cinematicketingbackend.patterns.decorator;
 
 public class ThreeDGlassesDecorator extends TicketDecorator {
 
