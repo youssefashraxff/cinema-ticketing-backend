@@ -33,8 +33,9 @@ public class MovieService {
         this.hallService = hallService;
     }
 
-    public Movie createMovie(String name, int duration, String language, double rating, 
-                           String type, String description, int ageRestriction) {
+    public Movie createMovie(String name, int duration, String language, double rating,
+                           String type, String description, int ageRestriction,
+                           String trailerUrl, String verticalPoster, String horizontalPoster) {
         // Validate rating
         if (rating < 0 || rating > 10) {
             throw new InvalidRatingException("Rating must be between 0 and 10");
@@ -54,7 +55,8 @@ public class MovieService {
         }
 
         // Create movie with flyweight reference
-        Movie movie = new Movie(name, duration, newMovieId, language, rating, category);
+        Movie movie = new Movie(name, duration, newMovieId, language, rating, category,
+                               trailerUrl, verticalPoster, horizontalPoster);
         
         // Save using repository's save method
         movieRepository.save(movie);
@@ -175,6 +177,9 @@ public class MovieService {
         movie.setLanguage(updatedMovie.getLanguage());
         movie.setRating(updatedMovie.getRating());
         movie.setMovieCategory(updatedMovie.getMovieCategory());
+        movie.setTrailerUrl(updatedMovie.getTrailerUrl());
+        movie.setVerticalPoster(updatedMovie.getVerticalPoster());
+        movie.setHorizontalPoster(updatedMovie.getHorizontalPoster());
         
         // Save updated movie
         movieRepository.save(movie);

@@ -14,8 +14,12 @@ public class Movie {
     private int movieId;
     private String language;
     private double rating; // 0-10 scale
-    private MovieCategoryFlyweight movieCategory; 
+    private MovieCategoryFlyweight movieCategory;
+    private String trailerUrl;
+    private String verticalPoster;
+    private String horizontalPoster;
     private List<Show> shows; 
+   
     
     // For JSON compatibility with old data
     private String descriptionOfMovie;
@@ -23,9 +27,12 @@ public class Movie {
     // Default constructor for Jackson
     public Movie() {
         this.shows = new ArrayList<>();
+        this.trailerUrl = "";
+        this.verticalPoster = "";
+        this.horizontalPoster = "";
     }
 
-    public Movie(String name, int duration, int movieId, String language, 
+    public Movie(String name, int duration, int movieId, String language,
                  double rating, MovieCategoryFlyweight movieCategory) {
         this.name = name;
         this.duration = duration;
@@ -33,6 +40,24 @@ public class Movie {
         this.language = language;
         this.rating = rating;
         this.movieCategory = movieCategory;
+        this.trailerUrl = "";
+        this.verticalPoster = "";
+        this.horizontalPoster = "";
+        this.shows = new ArrayList<>();
+    }
+
+    public Movie(String name, int duration, int movieId, String language,
+                 double rating, MovieCategoryFlyweight movieCategory,
+                 String trailerUrl, String verticalPoster, String horizontalPoster) {
+        this.name = name;
+        this.duration = duration;
+        this.movieId = movieId;
+        this.language = language;
+        this.rating = rating;
+        this.movieCategory = movieCategory;
+        this.trailerUrl = trailerUrl;
+        this.verticalPoster = verticalPoster;
+        this.horizontalPoster = horizontalPoster;
         this.shows = new ArrayList<>();
     }
 
@@ -106,6 +131,30 @@ public class Movie {
         this.movieCategory = movieCategory;
     }
 
+    public String getTrailerUrl() {
+        return trailerUrl;
+    }
+
+    public void setTrailerUrl(String trailerUrl) {
+        this.trailerUrl = trailerUrl;
+    }
+
+    public String getVerticalPoster() {
+        return verticalPoster;
+    }
+
+    public void setVerticalPoster(String verticalPoster) {
+        this.verticalPoster = verticalPoster;
+    }
+
+    public String getHorizontalPoster() {
+        return horizontalPoster;
+    }
+
+    public void setHorizontalPoster(String horizontalPoster) {
+        this.horizontalPoster = horizontalPoster;
+    }
+
     public List<Show> getShows() {
         return shows;
     }
@@ -132,6 +181,9 @@ public class Movie {
                 ", rating=" + rating +
                 ", category=" + (movieCategory != null ? movieCategory.getType() : "null") +
                 ", ageRestriction=" + getAgeRestriction() +
+                ", trailerUrl='" + trailerUrl + '\'' +
+                ", verticalPoster='" + verticalPoster + '\'' +
+                ", horizontalPoster='" + horizontalPoster + '\'' +
                 ", showsCount=" + shows.size() +
                 '}';
     }

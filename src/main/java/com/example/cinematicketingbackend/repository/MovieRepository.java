@@ -107,6 +107,9 @@ public class MovieRepository {
             toUpdate.setLanguage(movie.getLanguage());
             toUpdate.setRating(movie.getRating());
             toUpdate.setMovieCategory(movie.getMovieCategory());
+            toUpdate.setTrailerUrl(movie.getTrailerUrl());
+            toUpdate.setVerticalPoster(movie.getVerticalPoster());
+            toUpdate.setHorizontalPoster(movie.getHorizontalPoster());
             toUpdate.setShows(movie.getShows());
         } else {
             // Add new movie
