@@ -1,4 +1,4 @@
-package com.example.cinematicketingbackend.decorator;
+package com.example.cinematicketingbackend.patterns.decorator;
 
 public abstract class TicketDecorator implements Ticket {
     protected Ticket ticket;

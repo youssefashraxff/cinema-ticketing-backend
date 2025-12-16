@@ -1,4 +1,4 @@
-package com.example.cinematicketingbackend.decorator;
+package com.example.cinematicketingbackend.patterns.decorator;
 
 public class PopcornDecorator extends TicketDecorator {
     public PopcornDecorator(Ticket ticket) { super(ticket); }

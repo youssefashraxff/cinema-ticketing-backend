@@ -1,4 +1,4 @@
-package com.example.cinematicketingbackend.decorator;
+package com.example.cinematicketingbackend.patterns.decorator;
 
 public class BasicTicket implements Ticket {
     private double seatPrice;

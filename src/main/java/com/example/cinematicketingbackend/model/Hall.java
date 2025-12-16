@@ -15,10 +15,11 @@ public class Hall {
         this.hallStatus = "ACTIVE"; // Default status
     }
 
-    public Hall(int hallId, int capacity, String hallType) {
+    public Hall(int hallId, int capacity, String hallType, int SeatPrice) {
         this.hallId = hallId;
         this.capacity = capacity;
         this.hallType = hallType;
+        this.SeatPrice = SeatPrice;
         this.hallStatus = "ACTIVE"; // Default status for new halls
     }
 

@@ -9,11 +9,11 @@ import java.util.stream.Collectors;
 import com.example.cinematicketingbackend.exception.InvalidRatingException;
 import com.example.cinematicketingbackend.exception.InvalidSearchCriteriaException;
 import com.example.cinematicketingbackend.exception.MovieNotFoundException;
-import com.example.cinematicketingbackend.factory.MovieCategoryFactory;
 import com.example.cinematicketingbackend.model.Hall;
 import com.example.cinematicketingbackend.model.Movie;
 import com.example.cinematicketingbackend.model.MovieCategoryFlyweight;
 import com.example.cinematicketingbackend.model.Show;
+import com.example.cinematicketingbackend.patterns.MovieCategoryFlyweigth;
 import com.example.cinematicketingbackend.util.TimeUtils;
 
 public class MovieService {
@@ -36,24 +36,22 @@ public class MovieService {
         this.hallService = hallService;
     }
 
-    public Movie createMovie(String name, int duration, String language, double rating, String type, String description, int ageRestriction) {
+    public Movie createMovie(String name, int duration, String language, double rating, String type, String description,String trailerUrl,String verticalPoster, String horizonalPoster, int ageRestriction) {
         // Validate rating
         if (rating < 0 || rating > 10) {
             throw new InvalidRatingException("Rating must be between 0 and 10");
         }
 
         // Get or create flyweight category
-        MovieCategoryFlyweight category = MovieCategoryFactory.getMovieCategory(type, description, ageRestriction);
+        MovieCategoryFlyweight category = MovieCategoryFlyweigth.getMovieCategory(type, ageRestriction);
 
         int newMovieId = nextMovieId++;
         // Create movie with flyweight reference
-        Movie movie = new Movie(name, duration, newMovieId, language, rating, category);
+        Movie movie = new Movie(name, duration, newMovieId, language, rating, description, trailerUrl, verticalPoster, horizonalPoster, category);
         movies.put(newMovieId, movie);
         return movie;
     }
 
-
-   
     public void deleteMovie(int movieId) {
         if (!movies.containsKey(movieId)) {
             throw new MovieNotFoundException(movieId);
@@ -71,7 +69,6 @@ public class MovieService {
         movies.remove(movieId);
     }
 
-  
     public void addShow(int movieId, Show show) {
         if (show == null) {
             throw new IllegalArgumentException("Show cannot be null");

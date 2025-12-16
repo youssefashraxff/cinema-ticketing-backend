@@ -22,7 +22,7 @@ public class HallService {
         this.showService = showService;
     }
 
-    public Hall createHall(int capacity, String hallType) {
+    public Hall createHall(int capacity, String hallType, int seatPrice) {
         if (capacity <= 20) {
             throw new IllegalArgumentException("Hall capacity must be greater than 20");
         }
@@ -35,7 +35,7 @@ public class HallService {
         }
 
         int newHallId = nextHallId++;
-        Hall hall = new Hall(newHallId, capacity, normalizedType);
+        Hall hall = new Hall(newHallId, capacity, normalizedType,seatPrice);
         halls.put(newHallId, hall);
         
 
