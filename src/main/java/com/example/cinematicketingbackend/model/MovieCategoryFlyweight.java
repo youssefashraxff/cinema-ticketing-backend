@@ -1,12 +1,25 @@
 package com.example.cinematicketingbackend.model;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class MovieCategoryFlyweight {
     private final String type; 
     private final String descriptionOfMovie; 
     private final int ageRestriction; 
 
-    public MovieCategoryFlyweight(String type, String descriptionOfMovie, int ageRestriction) {
+    // Default constructor for Jackson
+    public MovieCategoryFlyweight() {
+        this.type = "";
+        this.descriptionOfMovie = "";
+        this.ageRestriction = 0;
+    }
+
+    @JsonCreator
+    public MovieCategoryFlyweight(
+            @JsonProperty("type") String type,
+            @JsonProperty("descriptionOfMovie") String descriptionOfMovie,
+            @JsonProperty("ageRestriction") int ageRestriction) {
         this.type = type;
         this.descriptionOfMovie = descriptionOfMovie;
         this.ageRestriction = ageRestriction;
@@ -32,23 +45,4 @@ public class MovieCategoryFlyweight {
                 ", ageRestriction=" + ageRestriction +
                 '}';
     }
-
-    // @Override
-    // public boolean equals(Object o) {
-    //     if (this == o) return true;
-    //     if (o == null || getClass() != o.getClass()) return false;
-    //     MovieCategoryFlyweight that = (MovieCategoryFlyweight) o;
-    //     return ageRestriction == that.ageRestriction &&
-    //             type.equals(that.type) &&
-    //             (descriptionOfMovie != null ? descriptionOfMovie.equals(that.descriptionOfMovie) : that.descriptionOfMovie == null);
-    // }
-
-    // @Override
-    // public int hashCode() {
-    //     int result = type.hashCode();
-    //     result = 31 * result + (descriptionOfMovie != null ? descriptionOfMovie.hashCode() : 0);
-    //     result = 31 * result + ageRestriction;
-    //     return result;
-    // }
 }
-

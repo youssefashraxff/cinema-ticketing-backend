@@ -1,5 +1,7 @@
 package com.example.cinematicketingbackend.model;
 
+import java.util.Objects;
+
 /**
  * Represents a cinema hall.
  */
@@ -8,6 +10,8 @@ public class Hall {
     private int capacity; // Number of seats
     private String hallType; // "STANDARD", "VIP", "IMAX", "3D", "PREMIUM"
     private String hallStatus; // "ACTIVE", "INACTIVE", "MAINTENANCE", "CLOSED"
+    private int SeatPrice;
+    public final int MaxNumOfShowsPerHall = 5;
 
     public Hall() {
         this.hallStatus = "ACTIVE"; // Default status
@@ -20,6 +24,7 @@ public class Hall {
         this.hallStatus = "ACTIVE"; // Default status for new halls
     }
 
+    // Getters and Setters
     public int getHallId() {
         return hallId;
     }
@@ -44,23 +49,6 @@ public class Hall {
         this.hallType = hallType;
     }
 
-    // Backward compatibility
-    public int getCapacityOfSeats() {
-        return capacity;
-    }
-
-    public void setCapacityOfSeats(int capacityOfSeats) {
-        this.capacity = capacityOfSeats;
-    }
-
-    public String getHalltype() {
-        return hallType;
-    }
-
-    public void setHalltype(String halltype) {
-        this.hallType = halltype;
-    }
-
     public String getHallStatus() {
         return hallStatus;
     }
@@ -69,27 +57,26 @@ public class Hall {
         this.hallStatus = hallStatus;
     }
 
-    // Backward compatibility - status field
-    public String getStatus() {
-        return hallStatus;
+    public int getSeatPrice() {
+        return SeatPrice;
     }
 
-    public void setStatus(String status) {
-        this.hallStatus = status;
+    public void setSeatPrice(int SeatPrice) {
+        this.SeatPrice = SeatPrice;
     }
 
-    // @Override
-    // public boolean equals(Object o) {
-    //     if (this == o) return true;
-    //     if (o == null || getClass() != o.getClass()) return false;
-    //     Hall hall = (Hall) o;
-    //     return hallId == hall.hallId;
-    // }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Hall hall = (Hall) o;
+        return hallId == hall.hallId;
+    }
 
-    // @Override
-    // public int hashCode() {
-    //     return Objects.hash(hallId);
-    // }
+    @Override
+    public int hashCode() {
+        return Objects.hash(hallId);
+    }
 
     @Override
     public String toString() {
@@ -98,6 +85,8 @@ public class Hall {
                 ", capacity=" + capacity +
                 ", hallType='" + hallType + '\'' +
                 ", hallStatus='" + hallStatus + '\'' +
+                ", SeatPrice=" + SeatPrice +
+                ", MaxNumOfShowsPerHall=" + MaxNumOfShowsPerHall +
                 '}';
     }
 }

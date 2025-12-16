@@ -1,36 +1,28 @@
 package com.example.cinematicketingbackend.service;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
 import com.example.cinematicketingbackend.exception.HallInUseException;
 import com.example.cinematicketingbackend.exception.InvalidHallStatusException;
 import com.example.cinematicketingbackend.model.Hall;
 import com.example.cinematicketingbackend.model.Show;
-
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
+import com.example.cinematicketingbackend.repository.HallRepository;
 
 public class HallService {
-    private Map<Integer, Hall> halls; 
-    private int nextHallId; 
-    private ShowService showService; 
-
+    private HallRepository hallRepository;
+    private ShowService showService;
 
     public HallService() {
-        this.halls = new HashMap<>();
-        this.nextHallId = 1; 
+        this.hallRepository = HallRepository.getInstance();
     }
-
 
     public void setShowService(ShowService showService) {
         this.showService = showService;
     }
 
-
-    public Hall createHall(int capacity, String hallType) {
+    public Hall createHall(int capacity, String hallType, int seatPrice) {
         if (capacity <= 20) {
             throw new IllegalArgumentException("Hall capacity must be greater than 20");
         }
@@ -42,13 +34,29 @@ public class HallService {
                 "Invalid hall type: " + hallType + ". Valid types: STANDARD, VIP, IMAX, 3D, PREMIUM");
         }
 
-        int newHallId = nextHallId++;
+        // Validate seat price
+        if (seatPrice <= 0) {
+            throw new IllegalArgumentException("Seat price must be greater than 0");
+        }
+
+        // Generate new hall ID
+        List<Hall> allHalls = hallRepository.getAllHalls();
+        int newHallId = 1;
+        if (!allHalls.isEmpty()) {
+            newHallId = allHalls.stream()
+                    .mapToInt(Hall::getHallId)
+                    .max()
+                    .orElse(0) + 1;
+        }
+
         Hall hall = new Hall(newHallId, capacity, normalizedType);
-        halls.put(newHallId, hall);
-       
+        hall.setSeatPrice(seatPrice);
+        
+        // Save hall using repository
+        hallRepository.save(hall);
+        
         return hall;
     }
-
 
     private boolean isValidHallType(String hallType) {
         return hallType.equals("STANDARD") || 
@@ -58,12 +66,13 @@ public class HallService {
                hallType.equals("PREMIUM");
     }
 
-
     public void deleteHall(int hallId) {
-        Hall hall = halls.get(hallId);
-        if (hall == null) {
-            System.out.println("Hall does not exist");
+        Optional<Hall> hallOpt = getHallById(hallId);
+        if (!hallOpt.isPresent()) {
+            throw new IllegalArgumentException("Hall with ID " + hallId + " does not exist");
         }
+
+        Hall hall = hallOpt.get();
 
         // Check if hall has scheduled shows
         if (showService != null) {
@@ -73,28 +82,38 @@ public class HallService {
             }
         }
 
-        halls.remove(hallId);
+        // Delete hall
+        hallRepository.deleteById(hallId);
     }
-
    
     public Hall getHall(int hallId) {
-        return halls.get(hallId);
+        Optional<Hall> hallOpt = getHallById(hallId);
+        return hallOpt.orElse(null);
+    }
+    
+    private Optional<Hall> getHallById(int hallId) {
+        return hallRepository.getHallById(hallId);
     }
 
     public List<Hall> getAllHalls() {
-        return new ArrayList<>(halls.values());
+        return hallRepository.getAllHalls();
     }
 
-  
     public List<Hall> getHallsByType(String hallType) {
         if (hallType == null || hallType.trim().isEmpty()) {
             return new ArrayList<>();
         }
 
         String normalizedType = hallType.toUpperCase().trim();
-        return halls.values().stream()
-                .filter(hall -> hall.getHallType().equals(normalizedType))
-                .collect(Collectors.toList());
+        List<Hall> allHalls = hallRepository.getAllHalls();
+        List<Hall> result = new ArrayList<>();
+        
+        for (Hall hall : allHalls) {
+            if (hall.getHallType().equals(normalizedType)) {
+                result.add(hall);
+            }
+        }
+        return result;
     }
 
     public Hall updateHallStatus(int hallId, String newStatus) {
@@ -108,10 +127,12 @@ public class HallService {
                     "Invalid status: " + newStatus + ". Valid statuses: ACTIVE, INACTIVE, MAINTENANCE, CLOSED");
         }
 
-        Hall hall = halls.get(hallId);
-        if (hall == null) {
+        Optional<Hall> hallOpt = getHallById(hallId);
+        if (!hallOpt.isPresent()) {
             throw new InvalidHallStatusException("Hall with ID " + hallId + " not found");
         }
+
+        Hall hall = hallOpt.get();
 
         // Validate status transition
         String currentStatus = hall.getHallStatus();
@@ -121,30 +142,19 @@ public class HallService {
         }
 
         hall.setHallStatus(normalizedStatus);
+        
+        // Save updated hall
+        hallRepository.save(hall);
         return hall;
     }
-
-    /**
-     * Validate hall status value.
-     *
-     * @param status Status to validate
-     * @return true if valid
-     */
+   
     private boolean isValidHallStatus(String status) {
         return status.equals("ACTIVE") || 
                status.equals("INACTIVE") || 
                status.equals("MAINTENANCE") || 
                status.equals("CLOSED");
     }
-
-    /**
-     * Validate status transition.
-     * Defines allowed transitions between statuses.
-     *
-     * @param fromStatus Current status
-     * @param toStatus Target status
-     * @return true if transition is allowed
-     */
+   
     private boolean isValidStatusTransition(String fromStatus, String toStatus) {
         // Same status is always allowed
         if (fromStatus.equals(toStatus)) {
@@ -170,25 +180,18 @@ public class HallService {
         }
     }
 
-    /**
-     * Get all active halls.
-     * Returns only halls with status "ACTIVE".
-     *
-     * @return List of active halls
-     */
     public List<Hall> getActiveHalls() {
-        return halls.values().stream()
-                .filter(hall -> "ACTIVE".equals(hall.getHallStatus()))
-                .collect(Collectors.toList());
+        List<Hall> allHalls = hallRepository.getAllHalls();
+        List<Hall> result = new ArrayList<>();
+        
+        for (Hall hall : allHalls) {
+            if ("ACTIVE".equals(hall.getHallStatus())) {
+                result.add(hall);
+            }
+        }
+        return result;
     }
 
-    /**
-     * Get halls by status.
-     * Filters halls by the specified status.
-     *
-     * @param status Status to filter by
-     * @return List of halls with the specified status
-     */
     public List<Hall> getHallsByStatus(String status) {
         if (status == null || status.trim().isEmpty()) {
             return new ArrayList<>();
@@ -199,23 +202,23 @@ public class HallService {
             return new ArrayList<>();
         }
 
-        return halls.values().stream()
-                .filter(hall -> normalizedStatus.equals(hall.getHallStatus()))
-                .collect(Collectors.toList());
+        List<Hall> allHalls = hallRepository.getAllHalls();
+        List<Hall> result = new ArrayList<>();
+        
+        for (Hall hall : allHalls) {
+            if (normalizedStatus.equals(hall.getHallStatus())) {
+                result.add(hall);
+            }
+        }
+        return result;
     }
 
-    /**
-     * Check if hall is available for scheduling.
-     * Hall is available if it is ACTIVE.
-     *
-     * @param hallId ID of the hall
-     * @return true if hall is ACTIVE, false otherwise
-     */
     public boolean isHallAvailable(int hallId) {
-        Hall hall = halls.get(hallId);
-        if (hall == null) {
+        Optional<Hall> hallOpt = getHallById(hallId);
+        if (!hallOpt.isPresent()) {
             return false;
         }
+        Hall hall = hallOpt.get();
         return "ACTIVE".equals(hall.getHallStatus());
     }
 }

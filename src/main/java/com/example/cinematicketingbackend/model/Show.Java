@@ -1,5 +1,6 @@
 package com.example.cinematicketingbackend.model;
 
+import java.util.Objects;
 /**
  * Represents a movie show in a specific hall.
  */
@@ -7,7 +8,6 @@ public class Show {
     private String startTime; // Format: "yyyy-MM-dd HH:mm"
     private String finishTime; // Format: "yyyy-MM-dd HH:mm"
     private Hall hall;
-    // private int showId;
 
     public Show() {}
 
@@ -40,6 +40,22 @@ public class Show {
 
     public void setHall(Hall hall) {
         this.hall = hall;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Show show = (Show) o;
+        return Objects.equals(startTime, show.startTime) &&
+               Objects.equals(finishTime, show.finishTime) &&
+               hall != null && show.hall != null &&
+               hall.getHallId() == show.hall.getHallId();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(startTime, finishTime, hall != null ? hall.getHallId() : 0);
     }
 
     @Override

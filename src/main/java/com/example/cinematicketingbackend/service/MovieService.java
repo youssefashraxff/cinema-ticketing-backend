@@ -1,6 +1,9 @@
 package com.example.cinematicketingbackend.service;
 
-import com.example.cinematicketingbackend.exception.DuplicateMovieException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
 import com.example.cinematicketingbackend.exception.InvalidRatingException;
 import com.example.cinematicketingbackend.exception.InvalidSearchCriteriaException;
 import com.example.cinematicketingbackend.exception.MovieNotFoundException;
@@ -9,21 +12,17 @@ import com.example.cinematicketingbackend.model.Hall;
 import com.example.cinematicketingbackend.model.Movie;
 import com.example.cinematicketingbackend.model.MovieCategoryFlyweight;
 import com.example.cinematicketingbackend.model.Show;
+import com.example.cinematicketingbackend.repository.MovieRepository;
+import com.example.cinematicketingbackend.repository.ShowRepository;
 import com.example.cinematicketingbackend.util.TimeUtils;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
 public class MovieService {
-    private Map<Integer, Movie> movies; 
-    private ShowService showService; 
-    private HallService hallService; // Reference for hall-based searches
+    private MovieRepository movieRepository;
+    private ShowService showService;
+    private HallService hallService;
 
     public MovieService() {
-        this.movies = new HashMap<>();
+        this.movieRepository = MovieRepository.getInstance();
     }
 
     public void setShowService(ShowService showService) {
@@ -34,55 +33,77 @@ public class MovieService {
         this.hallService = hallService;
     }
 
-    public void addMovie(String name, int duration, int movieId, String language, double rating,
-                        String type, String description, int ageRestriction) {
+    public Movie createMovie(String name, int duration, String language, double rating, 
+                           String type, String description, int ageRestriction) {
         // Validate rating
         if (rating < 0 || rating > 10) {
-            throw new InvalidRatingException("Rating must be between 0 and 10. Provided: " + rating);
-        }
-
-        // Check for duplicate movie ID
-        if (movies.containsKey(movieId)) {
-            throw new DuplicateMovieException(movieId);
+            throw new InvalidRatingException("Rating must be between 0 and 10");
         }
 
         // Get or create flyweight category
         MovieCategoryFlyweight category = MovieCategoryFactory.getMovieCategory(type, description, ageRestriction);
 
-        // Create movie with flyweight reference
-        Movie movie = new Movie(name, duration, movieId, language, rating, category);
-        movies.put(movieId, movie);
-    }
-
-   
-    public void deleteMovie(int movieId) {
-        if (!movies.containsKey(movieId)) {
-            throw new MovieNotFoundException(movieId);
+        // Generate new movie ID
+        List<Movie> allMovies = movieRepository.findAll();
+        int newMovieId = 1;
+        if (!allMovies.isEmpty()) {
+            newMovieId = allMovies.stream()
+                    .mapToInt(Movie::getMovieId)
+                    .max()
+                    .orElse(0) + 1;
         }
 
-        Movie movie = movies.get(movieId);
-        // Remove all shows associated with this movie from ShowService
-        if (showService != null && movie.getShows() != null) {
-            List<Show> showsToRemove = new ArrayList<>(movie.getShows());
-            for (Show show : showsToRemove) {
-                showService.deleteShow(movieId, show.getStartTime(), show.getHall());
+        // Create movie with flyweight reference
+        Movie movie = new Movie(name, duration, newMovieId, language, rating, category);
+        
+        // Save using repository's save method
+        movieRepository.save(movie);
+        
+        return movie;
+    }
+
+    public String testMethod() {
+        return "MovieService is working";
+    }
+
+    public void deleteMovie(int movieId) {
+    // Check if movie exists
+    Optional<Movie> movieOpt = movieRepository.findById(movieId);
+    if (!movieOpt.isPresent()) {
+        throw new MovieNotFoundException(movieId);
+    }
+
+    Movie movie = movieOpt.get();
+    
+    // Remove all shows associated with this movie DIRECTLY from showRepository
+    if (movie.getShows() != null && !movie.getShows().isEmpty()) {
+        // Get ShowRepository instance
+        ShowRepository showRepository = ShowRepository.getInstance();
+        
+        for (Show show : movie.getShows()) {
+            if (show.getHall() != null) {
+                // Delete show directly from repository
+                showRepository.deleteByHallAndTime(show.getHall().getHallId(), show.getStartTime());
             }
         }
-
-        movies.remove(movieId);
     }
 
-  
+    // Delete movie
+    movieRepository.deleteById(movieId);
+}
+
     public void addShow(int movieId, Show show) {
         if (show == null) {
             throw new IllegalArgumentException("Show cannot be null");
         }
 
-        Movie movie = movies.get(movieId);
-        if (movie == null) {
+        Optional<Movie> movieOpt = movieRepository.findById(movieId);
+        if (!movieOpt.isPresent()) {
             throw new MovieNotFoundException(movieId);
         }
 
+        Movie movie = movieOpt.get();
+        
         // Validate time format
         if (!TimeUtils.validateTimeFormat(show.getStartTime()) || !TimeUtils.validateTimeFormat(show.getFinishTime())) {
             throw new com.example.cinematicketingbackend.exception.InvalidShowTimeException(
@@ -110,6 +131,25 @@ public class MovieService {
         if (showService != null) {
             showService.createShow(show.getStartTime(), show.getFinishTime(), show.getHall());
         }
+
+         try {
+        // Method 1: Use ShowService if available
+        if (showService != null) {
+            showService.createShow(show.getStartTime(), show.getFinishTime(), show.getHall());
+        } 
+        // Method 2: Direct repository save as backup
+        else {
+            // Import ShowRepository at the top of your file: 
+            // import com.example.cinematicketingbackend.repository.ShowRepository;
+            ShowRepository.getInstance().save(show);
+        }
+    } catch (Exception e) {
+        System.err.println("Warning: Could not save show to shows.json: " + e.getMessage());
+        // Continue anyway - at least the movie will have the show
+    }
+        
+        // Update movie with new show
+        movieRepository.save(movie);
     }
 
     public void updateMovieInfo(int movieId, Movie updatedMovie) {
@@ -117,11 +157,13 @@ public class MovieService {
             throw new IllegalArgumentException("Updated movie cannot be null");
         }
 
-        Movie movie = movies.get(movieId);
-        if (movie == null) {
+        Optional<Movie> movieOpt = movieRepository.findById(movieId);
+        if (!movieOpt.isPresent()) {
             throw new MovieNotFoundException(movieId);
         }
 
+        Movie movie = movieOpt.get();
+        
         // Validate rating
         if (updatedMovie.getRating() < 0 || updatedMovie.getRating() > 10) {
             throw new InvalidRatingException("Rating must be between 0 and 10. Provided: " + updatedMovie.getRating());
@@ -133,26 +175,30 @@ public class MovieService {
         movie.setLanguage(updatedMovie.getLanguage());
         movie.setRating(updatedMovie.getRating());
         movie.setMovieCategory(updatedMovie.getMovieCategory());
+        
+        // Save updated movie
+        movieRepository.save(movie);
     }
 
     public List<Movie> getAllMovies() {
-        return new ArrayList<>(movies.values());
+        return movieRepository.findAll();
     }
 
     public List<Show> getMovieShows(int movieId) {
-        Movie movie = movies.get(movieId);
-        if (movie == null) {
+        Optional<Movie> movieOpt = movieRepository.findById(movieId);
+        if (!movieOpt.isPresent()) {
             throw new MovieNotFoundException(movieId);
         }
+        Movie movie = movieOpt.get();
         return new ArrayList<>(movie.getShows());
     }
 
     public Movie getMovie(int movieId) {
-        Movie movie = movies.get(movieId);
-        if (movie == null) {
+        Optional<Movie> movieOpt = movieRepository.findById(movieId);
+        if (!movieOpt.isPresent()) {
             throw new MovieNotFoundException(movieId);
         }
-        return movie;
+        return movieOpt.get();
     }
 
     public List<Movie> getMoviesByCategory(String type) {
@@ -161,30 +207,37 @@ public class MovieService {
         }
 
         String normalizedType = type.trim();
-        return movies.values().stream()
-                .filter(movie -> movie.getMovieCategory() != null && 
-                                normalizedType.equalsIgnoreCase(movie.getMovieCategory().getType()))
-                .collect(Collectors.toList());
+        List<Movie> allMovies = movieRepository.findAll();
+        List<Movie> result = new ArrayList<>();
+        
+        for (Movie movie : allMovies) {
+            if (movie.getMovieCategory() != null && 
+                normalizedType.equalsIgnoreCase(movie.getMovieCategory().getType())) {
+                result.add(movie);
+            }
+        }
+        return result;
     }
 
     public List<Movie> searchMoviesByLanguage(String language) {
-    List<Movie> result = new ArrayList<>();
+        List<Movie> result = new ArrayList<>();
 
-    if (language == null || language.trim().isEmpty()) {
-        return result; // return empty list
-    }
-
-    String normalizedLanguage = language.trim();
-
-    for (Movie movie : movies.values()) {
-        if (movie.getLanguage() != null &&
-            movie.getLanguage().equalsIgnoreCase(normalizedLanguage)) {
-            result.add(movie);
+        if (language == null || language.trim().isEmpty()) {
+            return result;
         }
-    }
 
-    return result;
-}
+        String normalizedLanguage = language.trim();
+        List<Movie> allMovies = movieRepository.findAll();
+
+        for (Movie movie : allMovies) {
+            if (movie.getLanguage() != null &&
+                movie.getLanguage().equalsIgnoreCase(normalizedLanguage)) {
+                result.add(movie);
+            }
+        }
+
+        return result;
+    }
  
     public List<Movie> searchMoviesByShowtime(String startTime, String endTime) {
         if (startTime == null || endTime == null) {
@@ -204,8 +257,10 @@ public class MovieService {
                     "Start time must be before or equal to end time");
         }
 
+        List<Movie> allMovies = movieRepository.findAll();
         List<Movie> result = new ArrayList<>();
-        for (Movie movie : movies.values()) {
+        
+        for (Movie movie : allMovies) {
             if (movie.getShows() != null && !movie.getShows().isEmpty()) {
                 // Check if any show overlaps with the time range
                 for (Show show : movie.getShows()) {
@@ -225,45 +280,40 @@ public class MovieService {
         return result;
     }
 
-   public List<Movie> searchMoviesByDuration(int minDuration, int maxDuration) {
-    // Validate input
-    if (minDuration < 0 || maxDuration < 0) {
-        throw new com.example.cinematicketingbackend.exception.InvalidSearchCriteriaException(
-                "Duration cannot be negative");
-    }
-    if (minDuration > maxDuration) {
-        throw new com.example.cinematicketingbackend.exception.InvalidSearchCriteriaException(
-                "Minimum duration cannot be greater than maximum duration");
-    }
-
-    List<Movie> result = new ArrayList<>();
-
-    // Loop through all movies and check duration
-    for (Movie movie : movies.values()) {
-        int duration = movie.getDuration();
-        if (duration >= minDuration && duration <= maxDuration) {
-            result.add(movie);
+    public List<Movie> searchMoviesByDuration(int minDuration, int maxDuration) {
+        // Validate input
+        if (minDuration < 0 || maxDuration < 0) {
+            throw new com.example.cinematicketingbackend.exception.InvalidSearchCriteriaException(
+                    "Duration cannot be negative");
         }
+        if (minDuration > maxDuration) {
+            throw new com.example.cinematicketingbackend.exception.InvalidSearchCriteriaException(
+                    "Minimum duration cannot be greater than maximum duration");
+        }
+
+        List<Movie> allMovies = movieRepository.findAll();
+        List<Movie> result = new ArrayList<>();
+
+        // Loop through all movies and check duration
+        for (Movie movie : allMovies) {
+            int duration = movie.getDuration();
+            if (duration >= minDuration && duration <= maxDuration) {
+                result.add(movie);
+            }
+        }
+
+        return result;
     }
 
-    return result;
-}
-
-    /**
-     * Search movies by exact duration.
-     * Returns movies with the exact specified duration.
-     *
-     * @param exactDuration Exact duration in minutes
-     * @return List of movies with the exact duration
-     * @throws InvalidSearchCriteriaException if duration is negative
-     */
     public List<Movie> searchMoviesByDuration(int exactDuration) {
         if (exactDuration < 0) {
             throw new InvalidSearchCriteriaException("Duration cannot be negative");
         }
 
+        List<Movie> allMovies = movieRepository.findAll();
         List<Movie> result = new ArrayList<>();
-        for (Movie movie : movies.values()) {
+        
+        for (Movie movie : allMovies) {
             if (movie.getDuration() == exactDuration) {
                 result.add(movie);
             }
@@ -283,8 +333,10 @@ public class MovieService {
                     "Hall with ID " + hallId + " does not exist");
         }
 
+        List<Movie> allMovies = movieRepository.findAll();
         List<Movie> result = new ArrayList<>();
-        for (Movie movie : movies.values()) {
+        
+        for (Movie movie : allMovies) {
             if (movie.getShows() != null && !movie.getShows().isEmpty()) {
                 // Check if any show is in the specified hall
                 for (Show show : movie.getShows()) {
@@ -299,39 +351,27 @@ public class MovieService {
     }
 
     public List<Movie> searchMoviesByRating(double minRating, double maxRating) {
-    // Validate input
-    if (minRating < 0.0 || maxRating > 10.0) {
-        throw new com.example.cinematicketingbackend.exception.InvalidSearchCriteriaException(
-                "Rating must be between 0.0 and 10.0");
-    }
-    if (minRating > maxRating) {
-        throw new com.example.cinematicketingbackend.exception.InvalidSearchCriteriaException(
-                "Minimum rating cannot be greater than maximum rating");
-    }
-
-    List<Movie> result = new ArrayList<>();
-
-    // Loop through all movies and check rating
-    for (Movie movie : movies.values()) {
-        double rating = movie.getRating();
-        if (rating >= minRating && rating <= maxRating) {
-            result.add(movie);
+        // Validate input
+        if (minRating < 0.0 || maxRating > 10.0) {
+            throw new com.example.cinematicketingbackend.exception.InvalidSearchCriteriaException(
+                    "Rating must be between 0.0 and 10.0");
         }
-    }
+        if (minRating > maxRating) {
+            throw new com.example.cinematicketingbackend.exception.InvalidSearchCriteriaException(
+                    "Minimum rating cannot be greater than maximum rating");
+        }
 
-    return result;
-}
+        List<Movie> allMovies = movieRepository.findAll();
+        List<Movie> result = new ArrayList<>();
 
-    /**
-     * Search movies by minimum rating.
-     * Returns movies with rating >= minRating.
-     *
-     * @param minRating Minimum rating (0.0 to 10.0)
-     * @return List of movies with rating >= minRating
-     * @throws InvalidSearchCriteriaException if rating is invalid
-     */
-    public List<Movie> searchMoviesByRating(double minRating) {
-        return searchMoviesByRating(minRating, 10.0);
+        // Loop through all movies and check rating
+        for (Movie movie : allMovies) {
+            double rating = movie.getRating();
+            if (rating >= minRating && rating <= maxRating) {
+                result.add(movie);
+            }
+        }
+
+        return result;
     }
-   
 }

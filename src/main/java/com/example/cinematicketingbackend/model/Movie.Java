@@ -3,6 +3,11 @@ package com.example.cinematicketingbackend.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+@JsonIgnoreProperties(ignoreUnknown = true) // This will ignore unknown fields
 public class Movie {
     private String name;
     private int duration; // in minutes
@@ -12,12 +17,16 @@ public class Movie {
     private MovieCategoryFlyweight movieCategory; 
     private List<Show> shows; 
     
+    // For JSON compatibility with old data
+    private String descriptionOfMovie;
 
+    // Default constructor for Jackson
     public Movie() {
         this.shows = new ArrayList<>();
     }
 
-    public Movie(String name, int duration, int movieId, String language, double rating, MovieCategoryFlyweight movieCategory) {
+    public Movie(String name, int duration, int movieId, String language, 
+                 double rating, MovieCategoryFlyweight movieCategory) {
         this.name = name;
         this.duration = duration;
         this.movieId = movieId;
@@ -68,16 +77,25 @@ public class Movie {
         this.rating = rating;
     }
 
+    @JsonIgnore
     public int getAgeRestriction() {
         return movieCategory != null ? movieCategory.getAgeRestriction() : 0;
     }
 
+    @JsonIgnore
     public String getType() {
         return movieCategory != null ? movieCategory.getType() : null;
     }
 
+    @JsonIgnore
     public String getDescriptionOfMovie() {
         return movieCategory != null ? movieCategory.getDescriptionOfMovie() : null;
+    }
+
+    // This setter allows Jackson to set descriptionOfMovie but it won't be used
+    @JsonProperty("descriptionOfMovie")
+    public void setDescriptionOfMovie(String description) {
+        this.descriptionOfMovie = description; // Just store it, won't be used
     }
 
     public MovieCategoryFlyweight getMovieCategory() {
@@ -100,7 +118,6 @@ public class Movie {
         this.shows.add(show);
     }
 
-   
     public void removeShow(Show show) {
         this.shows.remove(show);
     }
