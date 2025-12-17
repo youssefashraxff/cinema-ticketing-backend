@@ -6,13 +6,10 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
 import com.example.cinematicketingbackend.exception.InvalidHallStatusException;
-import com.example.cinematicketingbackend.exception.InvalidShowTimeException;
 import com.example.cinematicketingbackend.exception.MaxShowsPerHallException;
-import com.example.cinematicketingbackend.exception.ShowOverlapException;
 import com.example.cinematicketingbackend.model.Hall;
 import com.example.cinematicketingbackend.model.Show;
 import com.example.cinematicketingbackend.repository.FacadeRepository;
-import com.example.cinematicketingbackend.util.TimeUtils;
 
 @Service
 public class ShowService {
@@ -25,24 +22,13 @@ public class ShowService {
 
     public Show createShow(String startTime, String finishTime) {
 
-        if (!TimeUtils.validateTimeFormat(startTime) ||
-            !TimeUtils.validateTimeFormat(finishTime)) {
-            throw new InvalidShowTimeException(
-                    "Invalid time format. Expected format: yyyy-MM-dd HH:mm");
-        }
-
-        if (!TimeUtils.isTimeAfter(finishTime, startTime)) {
-            throw new InvalidShowTimeException(
-                    "Finish time must be after start time");
-        }
-
         int newShowId = facade.shows().findAll().stream()
-        .mapToInt(Show::getShowId)
-        .max()
-        .orElse(0) + 1;
+                .mapToInt(Show::getShowId)
+                .max()
+                .orElse(0) + 1;
 
-Show show = new Show(newShowId, startTime, finishTime);
-return facade.shows().save(show);
+        Show show = new Show(newShowId, startTime, finishTime);
+        return facade.shows().save(show);
     }
 
     public void assignShowToHall(int showId, int hallId) {
@@ -74,13 +60,13 @@ return facade.shows().save(show);
         }
 
         for (Show existingShow : hallShows) {
-            if (TimeUtils.isOverlapping(
+            if (com.example.cinematicketingbackend.util.TimeUtils.isOverlapping(
                     show.getStartTime(),
                     show.getFinishTime(),
                     existingShow.getStartTime(),
                     existingShow.getFinishTime())) {
 
-                throw new ShowOverlapException(
+                throw new com.example.cinematicketingbackend.exception.ShowOverlapException(
                         "Show overlaps with an existing show in this hall");
             }
         }
@@ -89,12 +75,36 @@ return facade.shows().save(show);
         facade.shows().save(show);
     }
 
-    public void deleteShow(String startTime, String finishTime, int hallId) {
-        facade.shows().delete(startTime, finishTime, hallId);
+    public void assignMovieToShow(int showId, int movieId) {
+
+        Show show = facade.shows()
+                .findById(showId)
+                .orElseThrow(() ->
+                        new IllegalArgumentException(
+                                "Show not found: " + showId));
+
+        facade.movies()
+                .findById(movieId)
+                .orElseThrow(() ->
+                        new IllegalArgumentException(
+                                "Movie not found: " + movieId));
+
+        show.setMovieId(movieId);
+        facade.shows().save(show);
+    }
+
+    public void deleteShow(int showId) {
+        facade.shows().delete(showId);
     }
 
     public List<Show> getAllShows() {
         return facade.shows().findAll();
+    }
+
+    public List<Show> getShowsByMovie(int MovieId){
+        return facade.shows().findAll().stream()
+                .filter(s -> s.getMovieId() == MovieId)
+                .collect(Collectors.toList());
     }
 
     public List<Show> getShowsByHall(int hallId) {

@@ -3,27 +3,29 @@ package com.example.cinematicketingbackend.model;
 
 public class Show {
     private int showId;
+    private int movieId;
     private String startTime; // Format: "yyyy-MM-dd HH:mm"
     private String finishTime; // Format: "yyyy-MM-dd HH:mm"
     private int hallId;
 
     public Show() {}
 
-    public Show(int showId,String startTime, String finishTime) {
+    public Show(int showId, String startTime, String finishTime) {
         this.showId = showId;
         this.startTime = startTime;
         this.finishTime = finishTime;
-        this.hallId = -1;
-    }
-
-    public Show(int showId,String startTime, String finishTime , int hallId) {
-        this.showId = showId;
-        this.startTime = startTime;
-        this.finishTime = finishTime;
-        this.hallId = hallId;
+        this.hallId = -1;   // unassigned
+        this.movieId = -1; // unassigned
     }
 
     // Getters and Setters
+    public int getMovieId() {
+        return movieId;
+    }
+    public void setMovieId(int movieId) {
+        this.movieId = movieId;
+    }
+
     public int getShowId() {
         return showId;
     }
@@ -59,7 +61,9 @@ public class Show {
     @Override
     public String toString() {
         return "Show{" +
-                "startTime='" + startTime + '\'' +
+                "showId=" + showId +
+                ", movieId=" + movieId +
+                ", startTime='" + startTime + '\'' +
                 ", finishTime='" + finishTime + '\'' +
                 ", hallId=" + hallId +
                 '}';

@@ -71,13 +71,9 @@ public class ShowRepository {
         return show;
     }
 
-    public void delete(String startTime, String finishTime, int hallId) {
+    public void delete(int showId) {
         List<Show> shows = loadShows();
-        shows.removeIf(s ->
-                s.getStartTime().equals(startTime) &&
-                s.getFinishTime().equals(finishTime) &&
-                s.getHallId() == hallId
-        );
+        shows.removeIf(s -> s.getShowId() == showId);
         saveShows(shows);
     }
 }
