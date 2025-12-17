@@ -1,7 +1,9 @@
 package com.example.cinematicketingbackend.service;
 
 import com.example.cinematicketingbackend.patterns.PaymentStrategy;
+import org.springframework.stereotype.Service;
 
+@Service
 public class PaymentServices {
     private PaymentStrategy paymentStrategy;
 

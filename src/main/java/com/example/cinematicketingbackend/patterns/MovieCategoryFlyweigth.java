@@ -1,11 +1,11 @@
 package com.example.cinematicketingbackend.patterns;
 
-import com.example.cinematicketingbackend.exception.InvalidCategoryException;
-import com.example.cinematicketingbackend.model.MovieCategoryFlyweight;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+
+import com.example.cinematicketingbackend.exception.InvalidCategoryException;
+import com.example.cinematicketingbackend.model.MovieCategoryFlyweight;
 
 public class MovieCategoryFlyweigth {
     private static final Map<String, MovieCategoryFlyweight> categoryCache = new HashMap<>();

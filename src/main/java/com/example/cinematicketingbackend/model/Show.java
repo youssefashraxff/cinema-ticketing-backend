@@ -1,23 +1,37 @@
 package com.example.cinematicketingbackend.model;
 
-/**
- * Represents a movie show in a specific hall.
- */
+
 public class Show {
+    private int showId;
     private String startTime; // Format: "yyyy-MM-dd HH:mm"
     private String finishTime; // Format: "yyyy-MM-dd HH:mm"
-    private Hall hall;
-    // private int showId;
+    private int hallId;
 
     public Show() {}
 
-    public Show(String startTime, String finishTime, Hall hall) {
+    public Show(int showId,String startTime, String finishTime) {
+        this.showId = showId;
         this.startTime = startTime;
         this.finishTime = finishTime;
-        this.hall = hall;
+        this.hallId = -1;
+    }
+
+    public Show(int showId,String startTime, String finishTime , int hallId) {
+        this.showId = showId;
+        this.startTime = startTime;
+        this.finishTime = finishTime;
+        this.hallId = hallId;
     }
 
     // Getters and Setters
+    public int getShowId() {
+        return showId;
+    }
+
+    public void setShowId(int showId) {
+        this.showId = showId;
+    }
+
     public String getStartTime() {
         return startTime;
     }
@@ -34,12 +48,12 @@ public class Show {
         this.finishTime = finishTime;
     }
 
-    public Hall getHall() {
-        return hall;
+    public int getHallId() {
+        return hallId;
     }
 
-    public void setHall(Hall hall) {
-        this.hall = hall;
+    public void setHallId(int hallId) {
+        this.hallId = hallId;
     }
 
     @Override
@@ -47,7 +61,7 @@ public class Show {
         return "Show{" +
                 "startTime='" + startTime + '\'' +
                 ", finishTime='" + finishTime + '\'' +
-                ", hall=" + hall +
+                ", hallId=" + hallId +
                 '}';
     }
 }

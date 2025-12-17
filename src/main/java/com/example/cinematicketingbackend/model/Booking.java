@@ -4,101 +4,122 @@ import java.util.List;
  * Represents a booking in the cinema ticketing system.
  */
 public class Booking {
-    private int bookingId;
-    private int customerId;
-    private int movieId;
-    private Show show;
-    private int numberOfSeats;
-    private double totalPrice;
-    private String bookingTime; // Format: "yyyy-MM-dd HH:mm:ss"
+    private final int bookingId;
+    private final int customerId;
+    private final int movieId;
+    private final Show show;
+    private final int numberOfSeats;
+    private final double totalPrice;
+    private final String bookingTime; // Format: "yyyy-MM-dd HH:mm:ss"
     private String status; // "CONFIRMED", "CANCELLED", "PENDING"
-    private List<Seat> seats;
+    private final List<Seat> seats;
 
     public List<Seat> getSeats() {
         return seats;
     }
 
-    public void setSeats(List<Seat> seats) {
-        this.seats = seats;
+    public void setStatus(String status) {
+        this.status = status;
     }
 
-    public Booking() {
-        this.status = "PENDING";
+    private Booking(Builder builder) {
+        this.bookingId = builder.bookingId;
+        this.customerId = builder.customerId;
+        this.movieId = builder.movieId;
+        this.show = builder.show;
+        this.numberOfSeats = builder.numberOfSeats;
+        this.totalPrice = builder.totalPrice;
+        this.bookingTime = builder.bookingTime;
+        this.seats = builder.seats;
+        this.status = builder.status;
     }
 
-    public Booking(int bookingId, int customerId, int movieId, Show show, int numberOfSeats, double totalPrice) {
-        this.bookingId = bookingId;
-        this.customerId = customerId;
-        this.movieId = movieId;
-        this.show = show;
-        this.numberOfSeats = numberOfSeats;
-        this.totalPrice = totalPrice;
-        this.status = "CONFIRMED";
+    public static class Builder {
+
+        private int bookingId;
+        private int customerId;
+        private int movieId;
+        private Show show;
+        private int numberOfSeats;
+        private double totalPrice;
+        private String bookingTime;
+        private String status = "PENDING";
+        private List<Seat> seats;
+
+        public Builder bookingId(int bookingId) {
+            this.bookingId = bookingId;
+            return this;
+        }
+
+        public Builder customerId(int customerId) {
+            this.customerId = customerId;
+            return this;
+        }
+
+        public Builder movieId(int movieId) {
+            this.movieId = movieId;
+            return this;
+        }
+
+        public Builder show(Show show) {
+            this.show = show;
+            return this;
+        }
+
+        public Builder numberOfSeats(int numberOfSeats) {
+            this.numberOfSeats = numberOfSeats;
+            return this;
+        }
+
+        public Builder totalPrice(double totalPrice) {
+            this.totalPrice = totalPrice;
+            return this;
+        }
+
+        public Builder bookingTime(String bookingTime) {
+            this.bookingTime = bookingTime;
+            return this;
+        }
+
+        public Builder seats(List<Seat> seats) {
+            this.seats = seats;
+            return this;
+        }
+
+        public Builder status(String status) {
+            this.status = status;
+            return this;
+        }
+
+        public Booking build() {
+            return new Booking(this);
+        }
     }
 
-    // Getters and Setters
+    // Getters
     public int getBookingId() {
         return bookingId;
     }
-
-    public void setBookingId(int bookingId) {
-        this.bookingId = bookingId;
-    }
-
     public int getCustomerId() {
         return customerId;
     }
-
-    public void setCustomerId(int customerId) {
-        this.customerId = customerId;
-    }
-
     public int getMovieId() {
         return movieId;
     }
-
-    public void setMovieId(int movieId) {
-        this.movieId = movieId;
-    }
-
     public Show getShow() {
         return show;
     }
-
-    public void setShow(Show show) {
-        this.show = show;
-    }
-
     public int getNumberOfSeats() {
         return numberOfSeats;
     }
-
-    public void setNumberOfSeats(int numberOfSeats) {
-        this.numberOfSeats = numberOfSeats;
-    }
-
     public double getTotalPrice() {
         return totalPrice;
     }
-
-    public void setTotalPrice(double totalPrice) {
-        this.totalPrice = totalPrice;
-    }
-
     public String getBookingTime() {
         return bookingTime;
     }
-
-    public void setBookingTime(String bookingTime) {
-        this.bookingTime = bookingTime;
-    }
-
     public String getStatus() {
         return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
     }
 
     @Override
@@ -127,4 +148,6 @@ public class Booking {
     public int hashCode() {
         return Integer.hashCode(bookingId);
     }
+
+    
 }
