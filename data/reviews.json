@@ -1,0 +1,10 @@
+[
+  {
+    "id": "r1",
+    "userId": "2",
+    "movieName": "Oppenheimer",
+    "rating": 5,
+    "comment": "Amazing movie!",
+    "timestamp": "2025-01-01T10:15:30"
+  }
+]

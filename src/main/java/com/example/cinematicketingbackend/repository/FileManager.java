@@ -21,27 +21,31 @@ public class FileManager {
         return instance;
     }
 
+    private Path resolvePath(String filePath) {
+        return Paths.get(System.getProperty("user.dir")).resolve(filePath);
+    }
+
     public <T> T read(String filePath, TypeReference<T> type) {
-        System.out.println("Working dir = " + System.getProperty("user.dir"));
-        System.out.println("Trying to read = " + Paths.get(filePath).toAbsolutePath());
+        Path path = resolvePath(filePath);
+        System.out.println("File path: "+path);
         try {
-            Path path = Paths.get(filePath);
-            
+            // Path path = resolvePath(filePath);
+
             if (!Files.exists(path)) {
+                System.out.println("File not found");
                 return null;
             }
-            System.out.println("File exists: " + Files.exists(Paths.get(filePath)));
-            System.out.println("File size: " + Files.size(Paths.get(filePath)));
+            System.out.println("File manager: "+mapper.readValue(path.toFile(), type));
             return mapper.readValue(path.toFile(), type);
         } catch (Exception e) {
-            e.printStackTrace();   // 👈 keep this
-    throw new RuntimeException(e);  // 👈 wrap the REAL cause
+            System.out.println("Failed to read file: " + filePath);
+            throw new RuntimeException(e);
         }
     }
 
     public void write(String filePath, Object data) {
         try {
-            Path path = Paths.get(filePath);
+            Path path = resolvePath(filePath);
             mapper.writerWithDefaultPrettyPrinter()
                   .writeValue(path.toFile(), data);
         } catch (Exception e) {

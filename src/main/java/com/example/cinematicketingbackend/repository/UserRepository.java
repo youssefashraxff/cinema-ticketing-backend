@@ -1,12 +1,13 @@
 package com.example.cinematicketingbackend.repository;
 
-import com.example.cinematicketingbackend.model.User;
-import com.fasterxml.jackson.core.type.TypeReference;
-import org.springframework.stereotype.Repository;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import org.springframework.stereotype.Repository;
+
+import com.example.cinematicketingbackend.model.User;
+import com.fasterxml.jackson.core.type.TypeReference;
 
 @Repository
 public class UserRepository {
@@ -26,8 +27,10 @@ public class UserRepository {
                     FILE_PATH,
                     new TypeReference<List<User>>() {}
             );
+            System.out.println("Data:"+data);
             return data != null ? data : new ArrayList<>();
         } catch (Exception e) {
+            System.out.println("Data empty");
             return new ArrayList<>();
         }
     }
@@ -40,31 +43,31 @@ public class UserRepository {
         return new ArrayList<>(loadUsers());
     }
 
-    public Optional<User> findById(String id) {
+    public Optional<User> findById(int id) {
         return loadUsers().stream()
-                .filter(u -> u.getId().equals(id))
+                .filter(u -> u.getId()==id)
                 .findFirst();
     }
 
-    public Optional<User> findByUsername(String username) {
+    public Optional<User> findByEmail(String email) {
         return loadUsers().stream()
-                .filter(u -> u.getUsername().equals(username))
+                .filter(u -> u.getEmail().equals(email))
                 .findFirst();
     }
 
     public User save(User user) {
         List<User> users = loadUsers();
-
-        users.removeIf(u -> u.getId().equals(user.getId()));
+        System.out.println(users);
+        users.removeIf(u -> u.getId()==(user.getId()));
         users.add(user);
 
         saveUsers(users);
         return user;
     }
 
-    public void deleteById(String id) {
+    public void deleteById(int id) {
         List<User> users = loadUsers();
-        users.removeIf(u -> u.getId().equals(id));
+        users.removeIf(u -> u.getId()==id);
         saveUsers(users);
     }
 }

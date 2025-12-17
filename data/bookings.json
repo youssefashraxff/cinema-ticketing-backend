@@ -1,0 +1,22 @@
+[
+  {
+    "bookingId": 1,
+    "customerId": 2,
+    "movieId": 1,
+    "show": {
+      "showId": 1,
+      "movieId": 1,
+      "startTime": "2025-01-01 18:00",
+      "finishTime": "2025-01-01 21:00",
+      "hallId": 1
+    },
+    "numberOfSeats": 2,
+    "totalPrice": 200,
+    "bookingTime": "2025-01-01 12:30:00",
+    "status": "CONFIRMED",
+    "seats": [
+      { "row": "A", "number": 1 },
+      { "row": "A", "number": 2 }
+    ]
+  }
+]

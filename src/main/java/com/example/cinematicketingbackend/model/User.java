@@ -1,25 +1,28 @@
 package com.example.cinematicketingbackend.model;
 
-public abstract class User {
-    protected String id;
-    protected String username;
-    protected String password;
-    protected String email;
-    protected String role;
+public  class User {
+    private int id;
+    private String username;
+    private String password;
+    private String email;
+    private String role;
 
-    public User(String id,String username, String password, String email,String role) {
+    public User() {
+    }
+
+    public User(int id,String username, String password, String email,String role) {
         this.id = id;
         this.username = username;
         this.password = password;
         this.email = email;
         this.role = role;
     }
-
-    public String getId() {
+    
+    public int getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
 
