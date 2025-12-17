@@ -1,13 +1,13 @@
 package com.example.cinematicketingbackend.repository;
 
-import com.example.cinematicketingbackend.model.Hall;
-import com.fasterxml.jackson.core.type.TypeReference;
-import org.springframework.stereotype.Repository;
-
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import org.springframework.stereotype.Repository;
+
+import com.example.cinematicketingbackend.model.Hall;
+import com.fasterxml.jackson.core.type.TypeReference;
 
 @Repository
 public class HallRepository {
@@ -26,8 +26,10 @@ private static final String FILE_PATH = "data/halls.json";
                     FILE_PATH,
                     new TypeReference<List<Hall>>() {}
             );
+            System.out.println("Data:"+data);
             return data != null ? data : new ArrayList<>();
         } catch (Exception e) {
+            System.out.println("Data empty");
             return new ArrayList<>();
         }
     }
@@ -41,6 +43,8 @@ private static final String FILE_PATH = "data/halls.json";
     }
 
     public Optional<Hall> findById(int hallId) {
+        System.out.println("\n\nShow Hall Id"+hallId+"\n\n");
+        System.out.println(loadHalls());
         return loadHalls().stream()
                 .filter(h -> h.getHallId() == hallId)
                 .findFirst();

@@ -7,12 +7,23 @@ public class Booking {
     private final int bookingId;
     private final int customerId;
     private final int movieId;
-    private final Show show;
+    private final int showId;
     private final int numberOfSeats;
     private final double totalPrice;
     private final String bookingTime; // Format: "yyyy-MM-dd HH:mm:ss"
     private String status; // "CONFIRMED", "CANCELLED", "PENDING"
     private final List<Seat> seats;
+
+    public Booking() {
+    this.bookingId = 0;
+    this.customerId = 0;
+    this.movieId = 0;
+    this.showId = 0;
+    this.numberOfSeats = 0;
+    this.totalPrice = 0;
+    this.bookingTime = null;
+    this.seats = null;
+}
 
     public List<Seat> getSeats() {
         return seats;
@@ -26,7 +37,7 @@ public class Booking {
         this.bookingId = builder.bookingId;
         this.customerId = builder.customerId;
         this.movieId = builder.movieId;
-        this.show = builder.show;
+        this.showId = builder.showId;
         this.numberOfSeats = builder.numberOfSeats;
         this.totalPrice = builder.totalPrice;
         this.bookingTime = builder.bookingTime;
@@ -39,7 +50,7 @@ public class Booking {
         private int bookingId;
         private int customerId;
         private int movieId;
-        private Show show;
+        private int showId;
         private int numberOfSeats;
         private double totalPrice;
         private String bookingTime;
@@ -61,8 +72,8 @@ public class Booking {
             return this;
         }
 
-        public Builder show(Show show) {
-            this.show = show;
+        public Builder showId(int showId) {
+            this.showId = showId;
             return this;
         }
 
@@ -106,8 +117,8 @@ public class Booking {
     public int getMovieId() {
         return movieId;
     }
-    public Show getShow() {
-        return show;
+    public int getShowId() {
+        return showId;
     }
     public int getNumberOfSeats() {
         return numberOfSeats;
@@ -128,7 +139,7 @@ public class Booking {
                 "bookingId=" + bookingId +
                 ", customerId=" + customerId +
                 ", movieId=" + movieId +
-                ", show=" + show +
+                ", showId=" + showId +
                 ", numberOfSeats=" + numberOfSeats +
                 ", totalPrice=" + totalPrice +
                 ", bookingTime='" + bookingTime + '\'' +

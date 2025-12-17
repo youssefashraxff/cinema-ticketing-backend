@@ -1,11 +1,13 @@
 package com.example.cinematicketingbackend.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -34,29 +36,19 @@ public class MovieController {
     }
 
     @PostMapping
-    public Movie createMovie(
-            @RequestParam String name,
-            @RequestParam int duration,
-            @RequestParam String language,
-            @RequestParam double rating,
-            @RequestParam String type,
-            @RequestParam String description,
-            @RequestParam String trailerUrl,
-            @RequestParam String verticalPoster,
-            @RequestParam String horizontalPoster,
-            @RequestParam int ageRestriction
-    ) {
+    public Movie createMovie(@RequestBody Map<String, Object> body) {
+
         return movieService.createMovie(
-                name,
-                duration,
-                language,
-                rating,
-                type,
-                description,
-                trailerUrl,
-                verticalPoster,
-                horizontalPoster,
-                ageRestriction
+                (String) body.get("name"),
+                (int) body.get("duration"),
+                (String) body.get("language"),
+                (double) body.get("rating"),
+                (String) body.get("categoryType"),
+                (String) body.get("description"),
+                (String) body.get("trailerUrl"),
+                (String) body.get("verticalPoster"),
+                (String) body.get("horizontalPoster"),
+                (int) body.get("ageRestriction")
         );
     }
 

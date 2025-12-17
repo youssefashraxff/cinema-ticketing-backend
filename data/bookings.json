@@ -1,22 +1,19 @@
-[
-  {
-    "bookingId": 1,
-    "customerId": 2,
-    "movieId": 1,
-    "show": {
-      "showId": 1,
-      "movieId": 1,
-      "startTime": "2025-01-01 18:00",
-      "finishTime": "2025-01-01 21:00",
-      "hallId": 1
-    },
-    "numberOfSeats": 2,
-    "totalPrice": 200,
-    "bookingTime": "2025-01-01 12:30:00",
-    "status": "CONFIRMED",
-    "seats": [
-      { "row": "A", "number": 1 },
-      { "row": "A", "number": 2 }
-    ]
-  }
-]
+[ {
+  "bookingId" : 1,
+  "customerId" : 2,
+  "movieId" : 1,
+  "showId" : 1,
+  "numberOfSeats" : 2,
+  "totalPrice" : 200.0,
+  "bookingTime" : "2025-12-17 20:35:17",
+  "status" : "CANCELLED",
+  "seats" : [ {
+    "row" : "A",
+    "number" : 1,
+    "seatId" : "A1"
+  }, {
+    "row" : "A",
+    "number" : 2,
+    "seatId" : "A2"
+  } ]
+} ]

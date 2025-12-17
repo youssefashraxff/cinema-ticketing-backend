@@ -1,8 +1,7 @@
-
-
 package com.example.cinematicketingbackend.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -10,12 +9,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.cinematicketingbackend.model.Booking;
 import com.example.cinematicketingbackend.model.Seat;
-import com.example.cinematicketingbackend.model.Show;
 import com.example.cinematicketingbackend.service.BookingService;
 
 @RestController
@@ -30,18 +27,28 @@ public class BookingController {
 
     // Create a booking (book seats)
     @PostMapping
-    public Booking bookSeats(
-            @RequestParam int bookingId,
-            @RequestParam int customerId,
-            @RequestParam int movieId,
-            @RequestBody Show show,
-            @RequestBody List<Seat> seats) {
+    public Booking bookSeats(@RequestBody Map<String, Object> body) {
+
+        int customerId = (int) body.get("customerId");
+        int movieId = (int) body.get("movieId");
+        int showId = (int) body.get("showId");
+        
+
+        @SuppressWarnings("unchecked")
+        List<Map<String, Object>> seatsMap =
+                (List<Map<String, Object>>) body.get("seats");
+
+        List<Seat> seats = seatsMap.stream()
+                .map(s -> new Seat(
+                        ((String) s.get("row")).charAt(0),
+                        (int) s.get("number")
+                ))
+                .toList();
 
         return bookingService.bookSeats(
-                bookingId,
                 customerId,
                 movieId,
-                show,
+                showId,
                 seats
         );
     }
