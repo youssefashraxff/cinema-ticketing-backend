@@ -30,7 +30,7 @@ public class MovieService {
             int duration,
             String language,
             double rating,
-            String type,
+            String categoryType,
             String description,
             String trailerUrl,
             String verticalPoster,
@@ -48,7 +48,7 @@ public class MovieService {
                 .orElse(0) + 1;
 
         MovieCategoryFlyweight category =
-                MovieCategoryFlyweigth.getMovieCategory(type, ageRestriction);
+                MovieCategoryFlyweigth.getMovieCategory(categoryType, ageRestriction);
 
         Movie movie = new Movie.Builder()
                 .movieId(newMovieId)
@@ -62,7 +62,6 @@ public class MovieService {
                 .horizontalPoster(horizontalPoster)
                 .category(category)
                 .build();
-
         return facade.movies().save(movie);
     }
 

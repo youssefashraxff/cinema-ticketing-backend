@@ -12,7 +12,19 @@ public class Movie {
     private final String horizontalPoster;
     private final MovieCategoryFlyweight movieCategory; 
     
+    public Movie() {
+        this.name = null;
+        this.duration = 0;
+        this.movieId = 0;
+        this.language = null;
+        this.rating = 0;
 
+        this.MovieDescription = null;
+        this.trailerURL = null;
+        this.verticalPoster = null;
+        this.horizontalPoster = null;
+        this.movieCategory = null;
+    }
     private Movie(Builder builder) {
         this.name = builder.name;
         this.duration = builder.duration;

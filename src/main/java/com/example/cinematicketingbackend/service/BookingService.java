@@ -23,21 +23,18 @@ public class BookingService {
         
     }
 
-    public Booking bookSeats(int bookingId,int customerId,int movieId,Show show,List<Seat> requestedSeats) {
+    public Booking bookSeats(int customerId,int movieId,int showId,List<Seat> requestedSeats) {
 
         if (requestedSeats == null || requestedSeats.isEmpty()) {
             throw new InvalidBookingException("No seats selected");
         }
 
-        if (show == null) {
-            throw new InvalidBookingException("Show not found");
-        }
-
-        if (show.getHallId() < 0) {
-            throw new InvalidBookingException("Show is not assigned to a hall yet");
-        }
-
-        int remainingSeats = getRemainingSeats(show.getShowId());
+        Show show = facade.shows()
+                .findById(showId)
+                .orElseThrow(() ->
+                        new InvalidBookingException("Show not found"));
+        
+        int remainingSeats = getRemainingSeats(showId);
 
         if (requestedSeats.size() > remainingSeats) {
             throw new InvalidBookingException(
@@ -53,11 +50,13 @@ public class BookingService {
         double totalPrice =
                 requestedSeats.size() * hall.getSeatPrice();
 
+        int bookingId = facade.bookings().findAll().size() + 1;
+
         Booking booking = new Booking.Builder()
                 .bookingId(bookingId)
                 .customerId(customerId)
                 .movieId(movieId)
-                .show(show)
+                .showId(showId)
                 .numberOfSeats(requestedSeats.size())
                 .totalPrice(totalPrice)
                 .bookingTime(
@@ -81,6 +80,7 @@ public class BookingService {
     }
 
     public Booking getBooking(int bookingId) {
+        System.out.println("\nBooking Id "+bookingId+"\n");
         return facade.bookings()
                 .findById(bookingId)
                 .orElseThrow(() ->

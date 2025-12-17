@@ -66,7 +66,29 @@ public class MovieRepository {
     }
 
     private void saveMovies(List<Movie> movies) {
-        fileManager.write(FILE_PATH, movies);
+        List<MovieDTO> dtos = new ArrayList<>();
+
+        for (Movie movie : movies) {
+            MovieDTO dto = new MovieDTO();
+            dto.movieId = movie.getMovieId();
+            dto.name = movie.getName();
+            dto.duration = movie.getDuration();
+            dto.language = movie.getLanguage();
+            dto.rating = movie.getRating();
+            dto.movieDescription = movie.getMovieDescription();
+            dto.trailerURL = movie.getTrailerURL();
+            dto.verticalPoster = movie.getVerticalPoster();
+            dto.horizontalPoster = movie.getHorizontalPoster();
+
+            if (movie.getMovieCategory() != null) {
+                dto.categoryType = movie.getMovieCategory().getType();
+                dto.ageRestriction = movie.getMovieCategory().getAgeRestriction();
+            }
+
+            dtos.add(dto);
+        }
+
+        fileManager.write(FILE_PATH, dtos);
     }
 
     public List<Movie> findAll() {

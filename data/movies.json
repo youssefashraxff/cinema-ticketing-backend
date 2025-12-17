@@ -1,33 +1,13 @@
 [ {
-  "name" : "Oppenheimer",
-  "duration" : 180,
   "movieId" : 1,
+  "name" : "Inception",
+  "duration" : 148,
   "language" : "English",
-  "rating" : 8.9,
-  "trailerURL" : "https://youtube.com/trailer1",
-  "verticalPoster" : "oppenheimer-vertical.jpg",
-  "horizontalPoster" : "oppenheimer-horizontal.jpg",
-  "movieCategory" : {
-    "type" : "drama",
-    "ageRestriction" : 7
-  },
-  "type" : "drama",
-  "ageRestriction" : 7,
-  "movieDescription" : "A story of J. Robert Oppenheimer."
-}, {
-  "name" : "Oppenheimer",
-  "duration" : 180,
-  "movieId" : 2,
-  "language" : "English",
-  "rating" : 8.9,
-  "trailerURL" : "https://youtube.com/x",
+  "rating" : 8.8,
+  "movieDescription" : "Dream within a dream",
+  "trailerURL" : "https://trailer.link",
   "verticalPoster" : "v.jpg",
   "horizontalPoster" : "h.jpg",
-  "movieCategory" : {
-    "type" : "drama",
-    "ageRestriction" : 7
-  },
-  "type" : "drama",
-  "ageRestriction" : 7,
-  "movieDescription" : "Test movie"
+  "categoryType" : "drama",
+  "ageRestriction" : 7
 } ]

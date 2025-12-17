@@ -6,7 +6,6 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
 import com.example.cinematicketingbackend.exception.InvalidHallStatusException;
-import com.example.cinematicketingbackend.exception.MaxShowsPerHallException;
 import com.example.cinematicketingbackend.model.Hall;
 import com.example.cinematicketingbackend.model.Show;
 import com.example.cinematicketingbackend.repository.FacadeRepository;
@@ -54,10 +53,7 @@ public class ShowService {
                 .filter(s -> s.getHallId() == hallId)
                 .collect(Collectors.toList());
 
-        if (hallShows.size() >= hall.MaxNumOfShowsPerHall) {
-            throw new MaxShowsPerHallException(
-                    hallId, hall.MaxNumOfShowsPerHall);
-        }
+       
 
         for (Show existingShow : hallShows) {
             if (com.example.cinematicketingbackend.util.TimeUtils.isOverlapping(

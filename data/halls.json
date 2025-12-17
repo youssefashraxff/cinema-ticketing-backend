@@ -4,13 +4,13 @@
     "capacity": 40,
     "hallType": "STANDARD",
     "hallStatus": "ACTIVE",
-    "SeatPrice": 100
+    "seatPrice": 100
   },
   {
     "hallId": 2,
     "capacity": 40,
     "hallType": "VIP",
     "hallStatus": "ACTIVE",
-    "SeatPrice": 150
+    "seatPrice": 150
   }
 ]

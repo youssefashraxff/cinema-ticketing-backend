@@ -5,18 +5,16 @@ public class Hall {
     private int capacity; // Number of seats
     private String hallType; // "STANDARD", "VIP", "IMAX", "3D", "PREMIUM"
     private String hallStatus; // "ACTIVE", "INACTIVE", "MAINTENANCE", "CLOSED"
-    private int SeatPrice;
-    public final int MaxNumOfShowsPerHall=5;
+    private int seatPrice;
+    
 
-    public Hall() {
-        this.hallStatus = "ACTIVE"; // Default status
-    }
+    public Hall() {}
 
-    public Hall(int hallId, int capacity, String hallType, int SeatPrice) {
+    public Hall(int hallId, int capacity, String hallType, int seatPrice) {
         this.hallId = hallId;
         this.capacity = capacity;
         this.hallType = hallType;
-        this.SeatPrice = SeatPrice;
+        this.seatPrice = seatPrice;
         this.hallStatus = "ACTIVE"; // Default status for new halls
     }
 
@@ -102,10 +100,10 @@ public class Hall {
     }
 
     public int getSeatPrice() {
-        return SeatPrice;
+        return seatPrice;
     }
 
-    public void setSeatPrice(int SeatPrice) {
-        this.SeatPrice = SeatPrice;
+    public void setSeatPrice(int seatPrice) {
+        this.seatPrice = seatPrice;
     }
 }
