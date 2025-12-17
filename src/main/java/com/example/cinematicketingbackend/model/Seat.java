@@ -1,34 +1,38 @@
 package com.example.cinematicketingbackend.model;
 
+import java.util.Objects;
+
 public class Seat {
-    private String seatId; // e.g., "A1", "B5"
-    private char row;      // 'A' through 'E'
-    private int number;    // 1 through 8
-    private String status = "available"; // available, locked, booked
-    private int hallId;
+    private char row;      // 'A' to 'E'
+    private int number;    // 1 to 8
 
     public Seat() {}
 
-    public Seat(char row, int number, int hallId) {
+    public Seat(char row, int number) {
         this.row = row;
         this.number = number;
-        this.hallId = hallId;
-        this.seatId = "" + row + number;
     }
 
-    
-    public String getSeatId() { return seatId; }
-    public void setSeatId(String seatId) { this.seatId = seatId; }
-    
     public char getRow() { return row; }
     public void setRow(char row) { this.row = row; }
-    
+
     public int getNumber() { return number; }
     public void setNumber(int number) { this.number = number; }
-    
-    public String getStatus() { return status; }
-    public void setStatus(String status) { this.status = status; }
-    
-    public int getHallId() { return hallId; }
-    public void setHallId(int hallId) { this.hallId = hallId; }
+
+    public String getSeatId() {
+        return "" + row + number;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Seat seat = (Seat) o;
+        return row == seat.row && number == seat.number;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(row, number);
+    }
 }

@@ -2,6 +2,7 @@ package com.example.cinematicketingbackend.service;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
@@ -17,7 +18,6 @@ public class BookingService {
 
     private final FacadeRepository facade;
     
-
     public BookingService(FacadeRepository facade) {
         this.facade = facade;
         
@@ -27,6 +27,21 @@ public class BookingService {
 
         if (requestedSeats == null || requestedSeats.isEmpty()) {
             throw new InvalidBookingException("No seats selected");
+        }
+
+        if (show == null) {
+            throw new InvalidBookingException("Show not found");
+        }
+
+        if (show.getHallId() < 0) {
+            throw new InvalidBookingException("Show is not assigned to a hall yet");
+        }
+
+        int remainingSeats = getRemainingSeats(show.getShowId());
+
+        if (requestedSeats.size() > remainingSeats) {
+            throw new InvalidBookingException(
+                    "Not enough available seats. Remaining: " + remainingSeats);
         }
 
         Hall hall = facade.halls()
@@ -62,7 +77,7 @@ public class BookingService {
     public List<Booking> getBookingsByCustomer(int customerId) {
         return facade.bookings().findAll().stream()
                 .filter(b -> b.getCustomerId() == customerId)
-                .toList();
+                .collect(Collectors.toList());
     }
 
     public Booking getBooking(int bookingId) {
@@ -77,5 +92,31 @@ public class BookingService {
         Booking booking = getBooking(bookingId);
         booking.setStatus("CANCELLED");
         facade.bookings().save(booking);
+    }
+
+    public int getRemainingSeats(int showId) {
+
+        Show show = facade.shows()
+                .findById(showId)
+                .orElseThrow(() ->
+                        new InvalidBookingException("Show not found: " + showId));
+
+        if (show.getHallId() < 0) {
+            throw new InvalidBookingException("Show is not assigned to a hall yet");
+        }
+
+        Hall hall = facade.halls()
+                .findById(show.getHallId())
+                .orElseThrow(() ->
+                        new InvalidBookingException("Hall not found for show"));
+
+        int bookedSeats = facade.bookings()
+                .findByShowId(showId)
+                .stream()
+                .filter(b -> "CONFIRMED".equals(b.getStatus()))
+                .mapToInt(Booking::getNumberOfSeats)
+                .sum();
+
+        return hall.getCapacity() - bookedSeats;
     }
 }
