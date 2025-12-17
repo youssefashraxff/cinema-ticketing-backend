@@ -1,72 +1,82 @@
 package com.example.cinematicketingbackend.service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.stream.Collectors;
+
+import org.springframework.stereotype.Service;
 
 import com.example.cinematicketingbackend.exception.InvalidHallStatusException;
 import com.example.cinematicketingbackend.exception.InvalidShowTimeException;
 import com.example.cinematicketingbackend.exception.MaxShowsPerHallException;
-import com.example.cinematicketingbackend.exception.MovieNotFoundException;
 import com.example.cinematicketingbackend.exception.ShowOverlapException;
 import com.example.cinematicketingbackend.model.Hall;
-import com.example.cinematicketingbackend.model.Movie;
 import com.example.cinematicketingbackend.model.Show;
+import com.example.cinematicketingbackend.repository.FacadeRepository;
 import com.example.cinematicketingbackend.util.TimeUtils;
 
+@Service
 public class ShowService {
-    private Map<Hall, List<Show>> hallShowsMap; // Efficient hall-based show lookups
-    private MovieService movieService; // Reference to MovieService
-    private HallService hallService; // Reference to HallService for status checks
 
-    public ShowService() {
-        this.hallShowsMap = new HashMap<>();
+    private final FacadeRepository facade;
+
+    public ShowService(FacadeRepository facade) {
+        this.facade = facade;
     }
 
+    public Show createShow(String startTime, String finishTime) {
 
-    public void setMovieService(MovieService movieService) {
-        this.movieService = movieService;
+        if (!TimeUtils.validateTimeFormat(startTime) ||
+            !TimeUtils.validateTimeFormat(finishTime)) {
+            throw new InvalidShowTimeException(
+                    "Invalid time format. Expected format: yyyy-MM-dd HH:mm");
+        }
+
+        if (!TimeUtils.isTimeAfter(finishTime, startTime)) {
+            throw new InvalidShowTimeException(
+                    "Finish time must be after start time");
+        }
+
+        int newShowId = facade.shows().findAll().stream()
+        .mapToInt(Show::getShowId)
+        .max()
+        .orElse(0) + 1;
+
+Show show = new Show(newShowId, startTime, finishTime);
+return facade.shows().save(show);
     }
 
-    public void setHallService(HallService hallService) {
-        this.hallService = hallService;
-    }
+    public void assignShowToHall(int showId, int hallId) {
 
-    public void createShow(String startTime, String finishTime, Hall hall) {
-        // Check hall status - only ACTIVE halls can have shows scheduled
-        if (hallService != null && !hallService.isHallAvailable(hall.getHallId())) {
+        Show show = facade.shows()
+                .findById(showId)
+                .orElseThrow(() ->
+                        new IllegalArgumentException(
+                                "Show not found: " + showId));
+
+        Hall hall = facade.halls()
+                .findById(hallId)
+                .orElseThrow(() ->
+                        new InvalidHallStatusException(
+                                "Hall not found: " + hallId));
+
+        if (!"ACTIVE".equalsIgnoreCase(hall.getHallStatus())) {
             throw new InvalidHallStatusException(
-                    "Cannot schedule show in hall " + hall.getHallId() +
-                            ". Hall status is: " + hall.getHallStatus() +
-                            ". Only ACTIVE halls can have shows scheduled.");
+                    "Hall " + hallId + " is not ACTIVE");
         }
 
-        // Check if hall has reached maximum number of shows
-        List<Show> currentHallShows = hallShowsMap.get(hall);
-        int currentShowsCount = (currentHallShows != null) ? currentHallShows.size() : 0;
+        List<Show> hallShows = facade.shows().findAll().stream()
+                .filter(s -> s.getHallId() == hallId)
+                .collect(Collectors.toList());
 
-        if (currentShowsCount >= hall.MaxNumOfShowsPerHall) {
-            throw new MaxShowsPerHallException(hall.getHallId(), hall.MaxNumOfShowsPerHall);
+        if (hallShows.size() >= hall.MaxNumOfShowsPerHall) {
+            throw new MaxShowsPerHallException(
+                    hallId, hall.MaxNumOfShowsPerHall);
         }
 
-        Show newShow = new Show(startTime, finishTime, hall);
-
-        // If hall does not exist, create list and add show
-        if (!hallShowsMap.containsKey(hall)) {
-            List<Show> shows = new ArrayList<>();
-            shows.add(newShow);
-            hallShowsMap.put(hall, shows);
-            return;
-        }
-
-        // Hall exists → check overlap
-        List<Show> existingShows = hallShowsMap.get(hall);
-
-        for (Show existingShow : existingShows) {
+        for (Show existingShow : hallShows) {
             if (TimeUtils.isOverlapping(
-                    startTime,
-                    finishTime,
+                    show.getStartTime(),
+                    show.getFinishTime(),
                     existingShow.getStartTime(),
                     existingShow.getFinishTime())) {
 
@@ -75,97 +85,21 @@ public class ShowService {
             }
         }
 
-        // Directly add to map value
-        hallShowsMap.get(hall).add(newShow);
-       
+        show.setHallId(hallId);
+        facade.shows().save(show);
     }
 
-    public void deleteShow(int movieId, String startTime, Hall hall) {
-        if (movieService == null) {
-            throw new IllegalStateException("MovieService is not set");
-        }
-
-        Movie movie = movieService.getMovie(movieId);
-        if (movie == null) {
-            throw new MovieNotFoundException(movieId);
-        }
-
-        // Find and remove show from movie
-        Show showToRemove = null;
-        for (Show show : movie.getShows()) {
-            if (show.getHall().equals(hall) && show.getStartTime().equals(startTime)) {
-                showToRemove = show;
-                break;
-            }
-        }
-
-        if (showToRemove != null) {
-            movie.removeShow(showToRemove);
-
-            // Remove from hall-based map
-            List<Show> hallShows = hallShowsMap.get(hall);
-            if (hallShows != null) {
-                hallShows.remove(showToRemove);
-            }
-        }
-    }
-
-    public void addShowToMovie(int movieId, Show show) {
-        if (movieService == null) {
-            throw new IllegalStateException("MovieService is not set");
-        }
-        // Delegate to MovieService which handles validation
-        movieService.addShow(movieId, show);
-    }
-
-    public boolean checkHallAvailability(Hall hall, String startTime, String finishTime) {
-        if (hall == null) {
-            return false;
-        }
-
-        // Validate time format
-        if (!TimeUtils.validateTimeFormat(startTime) || !TimeUtils.validateTimeFormat(finishTime)) {
-            throw new InvalidShowTimeException("Invalid time format. Expected format: yyyy-MM-dd HH:mm");
-        }
-
-        // Validate finish time is after start time
-        if (!TimeUtils.isTimeAfter(finishTime, startTime)) {
-            throw new InvalidShowTimeException("Finish time must be after start time");
-        }
-
-        // Get all shows for this hall
-        List<Show> hallShows = hallShowsMap.get(hall);
-        if (hallShows == null || hallShows.isEmpty()) {
-            return true; // Hall is available if no shows scheduled
-        }
-
-        // Check for overlapping shows
-        for (Show existingShow : hallShows) {
-            if (TimeUtils.isOverlapping(
-                    existingShow.getStartTime(), existingShow.getFinishTime(),
-                    startTime, finishTime)) {
-                return false; // Overlap found
-            }
-        }
-
-        return true; // No overlaps, hall is available
+    public void deleteShow(String startTime, String finishTime, int hallId) {
+        facade.shows().delete(startTime, finishTime, hallId);
     }
 
     public List<Show> getAllShows() {
-        List<Show> allShows = new ArrayList<>();
-        for (List<Show> shows : hallShowsMap.values()) {
-            allShows.addAll(shows);
-        }
-        return allShows;
+        return facade.shows().findAll();
     }
 
     public List<Show> getShowsByHall(int hallId) {
-        for (Map.Entry<Hall, List<Show>> entry : hallShowsMap.entrySet()) {
-            if (entry.getKey().getHallId() == hallId) {
-                return new ArrayList<>(entry.getValue());
-            }
-        }
-        return new ArrayList<>(); // Return empty list if hall not found
+        return facade.shows().findAll().stream()
+                .filter(s -> s.getHallId() == hallId)
+                .collect(Collectors.toList());
     }
-
 }

@@ -1,0 +1,20 @@
+[
+  {
+    "showId": 1,
+    "startTime": "2025-01-01 18:00",
+    "finishTime": "2025-01-01 20:00",
+    "hallId": -1
+  },
+  {
+    "showId": 2,
+    "startTime": "2025-01-01 21:00",
+    "finishTime": "2025-01-01 23:00",
+    "hallId": 1
+  },
+  {
+    "showId": 3,
+    "startTime": "2025-01-02 16:00",
+    "finishTime": "2025-01-02 18:00",
+    "hallId": 2
+  }
+]

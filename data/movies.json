@@ -1,0 +1,15 @@
+[
+  {
+    "movieId": 1,
+    "name": "Oppenheimer",
+    "duration": 180,
+    "language": "English",
+    "rating": 8.9,
+    "movieDescription": "Test description",
+    "trailerURL": "https://test",
+    "verticalPoster": "v.jpg",
+    "horizontalPoster": "h.jpg",
+    "categoryType": "Drama",
+    "ageRestriction": 16
+  }
+]

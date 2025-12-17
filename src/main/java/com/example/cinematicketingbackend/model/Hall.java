@@ -1,8 +1,5 @@
 package com.example.cinematicketingbackend.model;
 
-/**
- * Represents a cinema hall.
- */
 public class Hall {
     private int hallId;
     private int capacity; // Number of seats

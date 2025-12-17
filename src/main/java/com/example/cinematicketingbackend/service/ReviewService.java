@@ -1,48 +1,80 @@
 package com.example.cinematicketingbackend.service;
-import com.example.cinematicketingbackend.model.User;
-import com.example.cinematicketingbackend.model.Review;
-import java.time.LocalDateTime;
-import java.util.*;
 
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
+import org.springframework.stereotype.Service;
+
+import com.example.cinematicketingbackend.model.Review;
+import com.example.cinematicketingbackend.repository.FacadeRepository;
+
+@Service
 public class ReviewService {
 
-    private Map<String, List<Review>> reviewsByMovie = new HashMap<>();
-    public void addReview(String movieName, User loggedInUser, int rating, String comment) {
-        if (loggedInUser == null) {
-            System.out.println("You must be logged in to add a review!");
-            return;
+    private final FacadeRepository facade;
+
+    public ReviewService(FacadeRepository facade) {
+        this.facade = facade;
+    }
+
+    public Review addReview(
+            String movieName,
+            String userId,
+            int rating,
+            String comment
+    ) {
+
+        if (userId == null || userId.isBlank()) {
+            throw new IllegalArgumentException("User must be logged in to add a review");
         }
+
+        if (movieName == null || movieName.isBlank()) {
+            throw new IllegalArgumentException("Movie name is required");
+        }
+
         if (rating < 1 || rating > 5) {
             throw new IllegalArgumentException("Rating must be between 1 and 5");
         }
+
         Review review = new Review();
-        String id = String.valueOf((int)(Math.random() * 900) + 100);
-        review.setId(id);
-        review.setUserId(loggedInUser.getId());               // automatically set user ID
+        review.setId(UUID.randomUUID().toString());
+        review.setUserId(userId);
         review.setMovieName(movieName);
         review.setRating(rating);
         review.setComment(comment);
         review.setTimestamp(LocalDateTime.now());
 
-        if (!reviewsByMovie.containsKey(movieName)) {
-            reviewsByMovie.put(movieName, new ArrayList<>());
-        }
-        List<Review> reviews = reviewsByMovie.get(movieName);
-        reviews.add(review);
-
-        System.out.println("Review added successfully by " + loggedInUser.getUsername());
+        facade.reviews().save(review);
+        return review;
     }
 
     public List<Review> getMovieReviews(String movieName) {
-        return reviewsByMovie.getOrDefault(movieName, new ArrayList<>());
+
+        if (movieName == null || movieName.isBlank()) {
+            return List.of();
+        }
+
+        return facade.reviews()
+                .findAll()
+                .stream()
+                .filter(r -> movieName.equalsIgnoreCase(r.getMovieName()))
+                .collect(Collectors.toList());
     }
 
     public double calculateAverageRating(String movieName) {
-        List<Review> reviews = getMovieReviews(movieName);
-        if (reviews.isEmpty()) return 0.0;
 
-        int sum = 0;
-        for (Review r : reviews) sum += r.getRating();
+        List<Review> reviews = getMovieReviews(movieName);
+
+        if (reviews.isEmpty()) {
+            return 0.0;
+        }
+
+        int sum = reviews.stream()
+                .mapToInt(Review::getRating)
+                .sum();
+
         return (double) sum / reviews.size();
     }
 }
