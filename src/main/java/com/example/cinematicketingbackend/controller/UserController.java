@@ -1,6 +1,7 @@
 package com.example.cinematicketingbackend.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,20 +26,25 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public User register(@RequestBody User user) {
-        return userService.registerUser(user);
+    public User register(@RequestBody Map<String, String> body) {
+        return userService.registerUser(
+                body.get("email"),
+                body.get("password"),
+                body.get("username"),
+                body.get("role")
+        );
     }
 
     @PostMapping("/login")
     public User login(
-            @RequestParam String username,
+            @RequestParam String email,
             @RequestParam String password) {
 
-        return userService.login(username, password);
+        return userService.login(email, password);
     }
 
     @GetMapping("/{userId}")
-    public User getUserById(@PathVariable String userId) {
+    public User getUserById(@PathVariable int userId) {
         return userService.getUserById(userId);
     }
 

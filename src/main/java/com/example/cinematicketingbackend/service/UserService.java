@@ -1,10 +1,13 @@
 package com.example.cinematicketingbackend.service;
 
+import java.util.List;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
+
 import com.example.cinematicketingbackend.model.User;
 import com.example.cinematicketingbackend.repository.FacadeRepository;
-import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class UserService {
@@ -16,31 +19,37 @@ public class UserService {
     }
 
 
-    public User registerUser(User user) {
-
-        boolean usernameExists = facade.users()
-                .findByUsername(user.getUsername())
-                .isPresent();
-
-        if (usernameExists) {
-            return null;
-        }
+    public User registerUser(String email, String password , String username,String role) {
 
         boolean emailExists = facade.users()
                 .findAll()
                 .stream()
-                .anyMatch(u -> u.getEmail().equalsIgnoreCase(user.getEmail()));
+                .anyMatch(u -> u.getEmail().equalsIgnoreCase(email));
 
         if (emailExists) {
-            throw new IllegalArgumentException("Email already exists");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Email already exists");
         }
+        int newUserId = facade.users()
+                .findAll()
+                .stream()
+                .mapToInt(User::getId)
+                .max()
+                .orElse(0) + 1;
+
+        User user = new User(
+                newUserId,
+                username,
+                password,
+                email,
+                role
+        );
 
         facade.users().save(user);
         return user;
     }
 
-    public User login(String username, String password) {
-        if (username == null || username.isBlank()) {
+    public User login(String email, String password) {
+        if (email == null || email.isBlank()) {
             throw new IllegalArgumentException("Username is required");
         }
 
@@ -49,7 +58,7 @@ public class UserService {
         }
 
         User user = facade.users()
-                .findByUsername(username)
+                .findByEmail(email)
                 .orElseThrow(() ->
                         new IllegalArgumentException("Invalid username or password"));
 
@@ -60,7 +69,7 @@ public class UserService {
         return user;
     }
 
-    public User getUserById(String userId) {
+    public User getUserById(int userId) {
         return facade.users()
                 .findById(userId)
                 .orElse(null);

@@ -1,23 +1,16 @@
 [
   {
     "showId": 1,
-    "movieId": -1,
-    "startTime": "2025-01-01 18:00",
-    "finishTime": "2025-01-01 20:00",
-    "hallId": -1
-  },
-  {
-    "showId": 2,
     "movieId": 1,
-    "startTime": "2025-01-01 21:00",
-    "finishTime": "2025-01-01 23:00",
+    "startTime": "2025-01-01 18:00",
+    "finishTime": "2025-01-01 21:00",
     "hallId": 1
   },
   {
-    "showId": 3,
-    "movieId": 1,
-    "startTime": "2025-01-02 16:00",
-    "finishTime": "2025-01-02 18:00",
-    "hallId": 2
+    "showId": 2,
+    "movieId": -1,
+    "startTime": "2025-01-01 22:00",
+    "finishTime": "2025-01-02 01:00",
+    "hallId": -1
   }
 ]

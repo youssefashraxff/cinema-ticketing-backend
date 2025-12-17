@@ -1,0 +1,11 @@
+{
+  "name": "Prestige Cinema Environment",
+  "values": [
+    {
+      "key": "baseURL",
+      "value": "http://localhost:8080",
+      "enabled": true
+    }
+  ],
+  "_postman_variable_scope": "environment"
+}

@@ -1,0 +1,206 @@
+{
+  "info": {
+    "name": "Prestige Cinema Backend",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Movies",
+      "item": [
+        {
+          "name": "Get All Movies",
+          "request": { "method": "GET", "url": "{{baseURL}}/movies" }
+        },
+        {
+          "name": "Get Movie By Id",
+          "request": { "method": "GET", "url": "{{baseURL}}/movies/1" }
+        },
+        {
+          "name": "Create Movie",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseURL}}/movies",
+              "host": ["{{baseURL}}"],
+              "path": ["movies"],
+              "query": [
+                { "key": "name", "value": "Oppenheimer" },
+                { "key": "duration", "value": "180" },
+                { "key": "language", "value": "English" },
+                { "key": "rating", "value": "8.9" },
+                { "key": "type", "value": "Drama" },
+                { "key": "description", "value": "Test movie" },
+                { "key": "trailerUrl", "value": "https://youtube.com/x" },
+                { "key": "verticalPoster", "value": "v.jpg" },
+                { "key": "horizontalPoster", "value": "h.jpg" },
+                { "key": "ageRestriction", "value": "16" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Delete Movie",
+          "request": { "method": "DELETE", "url": "{{baseURL}}/movies/1" }
+        },
+        {
+          "name": "Search Movies By Category",
+          "request": {
+            "method": "GET",
+            "url": "{{baseURL}}/movies/category?type=Drama"
+          }
+        },
+        {
+          "name": "Search Movies By Language",
+          "request": {
+            "method": "GET",
+            "url": "{{baseURL}}/movies/search/language?language=English"
+          }
+        },
+        {
+          "name": "Search Movies By Duration",
+          "request": {
+            "method": "GET",
+            "url": "{{baseURL}}/movies/search/duration?min=90&max=180"
+          }
+        },
+        {
+          "name": "Search Movies By Rating",
+          "request": {
+            "method": "GET",
+            "url": "{{baseURL}}/movies/search/rating?min=7&max=9"
+          }
+        }
+      ]
+    },
+
+    {
+      "name": "Shows",
+      "item": [
+        {
+          "name": "Get All Shows",
+          "request": { "method": "GET", "url": "{{baseURL}}/shows" }
+        },
+        {
+          "name": "Create Show",
+          "request": {
+            "method": "POST",
+            "url": "{{baseURL}}/shows?startTime=2025-01-01 18:00&finishTime=2025-01-01 21:00"
+          }
+        },
+        {
+          "name": "Assign Movie To Show",
+          "request": { "method": "PUT", "url": "{{baseURL}}/shows/1/movie/1" }
+        },
+        {
+          "name": "Assign Show To Hall",
+          "request": { "method": "PUT", "url": "{{baseURL}}/shows/1/hall/1" }
+        },
+        {
+          "name": "Get Shows By Movie",
+          "request": { "method": "GET", "url": "{{baseURL}}/shows/movie/1" }
+        },
+        {
+          "name": "Get Shows By Hall",
+          "request": { "method": "GET", "url": "{{baseURL}}/shows/hall/1" }
+        },
+        {
+          "name": "Delete Show",
+          "request": { "method": "DELETE", "url": "{{baseURL}}/shows/1" }
+        }
+      ]
+    },
+
+    {
+      "name": "Bookings",
+      "item": [
+        {
+          "name": "Create Booking",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseURL}}/bookings",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"bookingId\": 1,\n  \"customerId\": 2,\n  \"movieId\": 1,\n  \"show\": {\n    \"showId\": 1,\n    \"movieId\": 1,\n    \"startTime\": \"2025-01-01 18:00\",\n    \"finishTime\": \"2025-01-01 21:00\",\n    \"hallId\": 1\n  },\n  \"seats\": [\n    { \"row\": \"A\", \"number\": 1 },\n    { \"row\": \"A\", \"number\": 2 }\n  ]\n}"
+            }
+          }
+        },
+        {
+          "name": "Get Booking By Id",
+          "request": { "method": "GET", "url": "{{baseURL}}/bookings/1" }
+        },
+        {
+          "name": "Get Bookings By Customer",
+          "request": {
+            "method": "GET",
+            "url": "{{baseURL}}/bookings/customer/2"
+          }
+        },
+        {
+          "name": "Cancel Booking",
+          "request": { "method": "PUT", "url": "{{baseURL}}/bookings/1/cancel" }
+        }
+      ]
+    },
+
+    {
+      "name": "Users",
+      "item": [
+        {
+          "name": "Register User",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseURL}}/users/register",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": \"2\",\n  \"username\": \"youssef\",\n  \"password\": \"1234\",\n  \"email\": \"youssef@email.com\",\n  \"role\": \"USER\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "url": "{{baseURL}}/users/login?username=youssef&password=1234"
+          }
+        },
+        {
+          "name": "Get All Users",
+          "request": { "method": "GET", "url": "{{baseURL}}/users" }
+        },
+        {
+          "name": "Get User By Id",
+          "request": { "method": "GET", "url": "{{baseURL}}/users/2" }
+        }
+      ]
+    },
+
+    {
+      "name": "Reviews",
+      "item": [
+        {
+          "name": "Add Review",
+          "request": {
+            "method": "POST",
+            "url": "{{baseURL}}/reviews?movieName=Oppenheimer&userId=2&rating=5&comment=Great movie"
+          }
+        },
+        {
+          "name": "Get Movie Reviews",
+          "request": {
+            "method": "GET",
+            "url": "{{baseURL}}/reviews/movie?movieName=Oppenheimer"
+          }
+        },
+        {
+          "name": "Get Average Rating",
+          "request": {
+            "method": "GET",
+            "url": "{{baseURL}}/reviews/movie/average-rating?movieName=Oppenheimer"
+          }
+        }
+      ]
+    }
+  ]
+}
