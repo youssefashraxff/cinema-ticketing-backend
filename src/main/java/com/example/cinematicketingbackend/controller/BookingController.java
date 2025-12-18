@@ -24,7 +24,10 @@ public class BookingController {
     public BookingController(BookingService bookingService) {
         this.bookingService = bookingService;
     }
-
+    @GetMapping
+    public List<Booking> getAllBookings() {
+        return bookingService.getAllBookings();
+    }
     // Create a booking (book seats)
     @PostMapping
     public Booking bookSeats(@RequestBody Map<String, Object> body) {

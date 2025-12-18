@@ -35,4 +35,8 @@ public class Seat {
     public int hashCode() {
         return Objects.hash(row, number);
     }
+    @Override
+    public String toString() {
+    return row + String.valueOf(number);
+}
 }

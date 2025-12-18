@@ -11,16 +11,21 @@ import com.example.cinematicketingbackend.model.Booking;
 import com.example.cinematicketingbackend.model.Hall;
 import com.example.cinematicketingbackend.model.Seat;
 import com.example.cinematicketingbackend.model.Show;
+import com.example.cinematicketingbackend.patterns.observer.BookingSubject;
 import com.example.cinematicketingbackend.repository.FacadeRepository;
 
 @Service
 public class BookingService {
 
     private final FacadeRepository facade;
+    private final BookingSubject bookingSubject;
     
-    public BookingService(FacadeRepository facade) {
-        this.facade = facade;
-        
+   public BookingService(FacadeRepository facade, BookingSubject bookingSubject) {
+    this.facade = facade;
+    this.bookingSubject = bookingSubject;
+}
+    public List<Booking> getAllBookings() {
+        return facade.bookings().findAll();
     }
 
     public Booking bookSeats(int customerId,int movieId,int showId,List<Seat> requestedSeats) {
@@ -69,6 +74,7 @@ public class BookingService {
 
         // Persist booking
         facade.bookings().save(booking);
+        bookingSubject.notifyObservers(booking);
 
         return booking;
     }
