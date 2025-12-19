@@ -1,12 +1,15 @@
 package com.example.cinematicketingbackend.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
+import com.example.cinematicketingbackend.exception.InvalidBookingException;
 import com.example.cinematicketingbackend.exception.InvalidHallStatusException;
 import com.example.cinematicketingbackend.model.Hall;
+import com.example.cinematicketingbackend.model.Seat;
 import com.example.cinematicketingbackend.model.Show;
 import com.example.cinematicketingbackend.repository.FacadeRepository;
 
@@ -97,6 +100,14 @@ public class ShowService {
         return facade.shows().findAll();
     }
 
+    public Show getShow(int showId) {
+        return facade.shows()
+                .findById(showId)
+                .orElseThrow(() ->
+                        new IllegalArgumentException(
+                                "Show not found: " + showId));
+    }
+    
     public List<Show> getShowsByMovie(int MovieId){
         return facade.shows().findAll().stream()
                 .filter(s -> s.getMovieId() == MovieId)
@@ -107,5 +118,40 @@ public class ShowService {
         return facade.shows().findAll().stream()
                 .filter(s -> s.getHallId() == hallId)
                 .collect(Collectors.toList());
+    }
+
+    public List<Seat> getRemainingSeats(int showId) {
+
+        Show show = facade.shows()
+                .findById(showId)
+                .orElseThrow(() ->
+                        new InvalidBookingException("Show not found: " + showId));
+
+        if (show.getHallId() < 0) {
+            throw new InvalidBookingException("Show is not assigned to a hall yet");
+        }
+
+        
+
+        
+        List<Seat> allSeats = new ArrayList<>();
+        for (char row = 'A'; row <= 'E'; row++) {
+            for (int number = 1; number <= 8; number++) {
+                allSeats.add(new Seat(row, number));
+            }
+        }
+
+        
+        List<Seat> bookedSeats = facade.bookings()
+                .findByShowId(showId)
+                .stream()
+                .filter(b -> "CONFIRMED".equals(b.getStatus()))
+                .flatMap(b -> b.getSeats().stream())
+                .toList();
+
+        
+        allSeats.removeAll(bookedSeats);
+
+        return allSeats;
     }
 }

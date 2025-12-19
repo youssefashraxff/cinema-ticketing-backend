@@ -79,6 +79,19 @@ public class BookingService {
         return booking;
     }
 
+    public int getRemainingSeats(int showId) {
+        int bookedSeats = facade.bookings()
+                .findByShowId(showId)
+                .stream()
+                .filter(b -> "CONFIRMED".equals(b.getStatus()))
+                .mapToInt(Booking::getNumberOfSeats)
+                .sum();
+
+        Show show = facade.shows().findById(showId).orElseThrow();
+        Hall hall = facade.halls().findById(show.getHallId()).orElseThrow();
+        return hall.getCapacityOfSeats() - bookedSeats;
+    }
+
     public List<Booking> getBookingsByCustomer(int customerId) {
         return facade.bookings().findAll().stream()
                 .filter(b -> b.getCustomerId() == customerId)
@@ -100,29 +113,5 @@ public class BookingService {
         facade.bookings().save(booking);
     }
 
-    public int getRemainingSeats(int showId) {
-
-        Show show = facade.shows()
-                .findById(showId)
-                .orElseThrow(() ->
-                        new InvalidBookingException("Show not found: " + showId));
-
-        if (show.getHallId() < 0) {
-            throw new InvalidBookingException("Show is not assigned to a hall yet");
-        }
-
-        Hall hall = facade.halls()
-                .findById(show.getHallId())
-                .orElseThrow(() ->
-                        new InvalidBookingException("Hall not found for show"));
-
-        int bookedSeats = facade.bookings()
-                .findByShowId(showId)
-                .stream()
-                .filter(b -> "CONFIRMED".equals(b.getStatus()))
-                .mapToInt(Booking::getNumberOfSeats)
-                .sum();
-
-        return hall.getCapacity() - bookedSeats;
-    }
+    
 }

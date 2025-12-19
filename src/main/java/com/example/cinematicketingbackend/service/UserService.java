@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.example.cinematicketingbackend.dto.AuthResponse;
 import com.example.cinematicketingbackend.model.User;
 import com.example.cinematicketingbackend.repository.FacadeRepository;
 
@@ -19,7 +20,7 @@ public class UserService {
     }
 
 
-    public User registerUser(String email, String password , String username,String role) {
+    public AuthResponse registerUser(String email, String password , String username,String role) {
 
         boolean emailExists = facade.users()
                 .findAll()
@@ -43,12 +44,12 @@ public class UserService {
                 email,
                 role
         );
-
+        String token = JwtService.generateToken(user);
         facade.users().save(user);
-        return user;
+        return new AuthResponse(user, token);
     }
 
-    public User login(String email, String password) {
+    public AuthResponse login(String email, String password) {
         if (email == null || email.isBlank()) {
             throw new IllegalArgumentException("Username is required");
         }
@@ -65,8 +66,8 @@ public class UserService {
         if (!user.getPassword().equals(password)) {
             throw new IllegalArgumentException("Invalid username or password");
         }
-
-        return user;
+        String token = JwtService.generateToken(user);
+        return new AuthResponse(user, token);
     }
 
     public User getUserById(int userId) {

@@ -2,6 +2,9 @@ package com.example.cinematicketingbackend.model;
 
 import java.util.Objects;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+@JsonIgnoreProperties(ignoreUnknown = true)
+
 public class Seat {
     private char row;      // 'A' to 'E'
     private int number;    // 1 to 8
