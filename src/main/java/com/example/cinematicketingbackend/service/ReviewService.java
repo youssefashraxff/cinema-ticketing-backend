@@ -21,14 +21,14 @@ public class ReviewService {
 
     public Review addReview(
             String movieName,
-            String userId,
+            int userId,
             int rating,
             String comment
     ) {
 
-        if (userId == null || userId.isBlank()) {
-            throw new IllegalArgumentException("User must be logged in to add a review");
-        }
+        // if (userId == null || userId.isBlank()) {
+        //     throw new IllegalArgumentException("User must be logged in to add a review");
+        // }
 
         if (movieName == null || movieName.isBlank()) {
             throw new IllegalArgumentException("Movie name is required");

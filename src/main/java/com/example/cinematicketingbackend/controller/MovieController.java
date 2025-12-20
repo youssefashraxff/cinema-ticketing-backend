@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.cinematicketingbackend.dto.MovieRequestDTO;
 import com.example.cinematicketingbackend.model.Movie;
 import com.example.cinematicketingbackend.service.MovieService;
 
@@ -37,22 +38,22 @@ public class MovieController {
         return movieService.getMovie(movieId);
     }
 
-    @PostMapping
-    public Movie createMovie(@RequestBody Map<String, Object> body) {
+   @PostMapping
+public Movie createMovie(@RequestBody MovieRequestDTO dto) {
 
-        return movieService.createMovie(
-                (String) body.get("name"),
-                (int) body.get("duration"),
-                (String) body.get("language"),
-                (double) body.get("rating"),
-                (String) body.get("categoryType"),
-                (String) body.get("description"),
-                (String) body.get("trailerUrl"),
-                (String) body.get("verticalPoster"),
-                (String) body.get("horizontalPoster"),
-                (int) body.get("ageRestriction")
-        );
-    }
+    return movieService.createMovie(
+            dto.getName(),
+            dto.getDuration(),
+            dto.getLanguage(),
+            dto.getRating(),
+            dto.getCategoryType(),
+            dto.getMovieDescription(),
+            dto.getTrailerURL(),
+            dto.getVerticalPoster(),
+            dto.getHorizontalPoster(),
+            dto.getAgeRestriction()
+    );
+}
 
     @DeleteMapping("/{movieId}")
     public void deleteMovie(@PathVariable int movieId) {

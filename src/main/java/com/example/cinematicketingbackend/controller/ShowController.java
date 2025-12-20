@@ -30,6 +30,10 @@ public class ShowController {
     public List<ShowDTO> getAllShows() {
         return showService.getAllShows();
     }
+    @GetMapping("/empty")
+    public List<Show> getEmptyShows() {
+        return showService.getEmptyShows();
+    }
     @GetMapping("/{showId}")
     public ShowDTO getShowById(@PathVariable int showId) {
         return showService.getShow(showId);
@@ -52,7 +56,7 @@ public class ShowController {
         showService.assignShowToHall(showId, hallId);
     }
 
-    @PutMapping("/{showId}/movie/{movieId}")
+    @PutMapping("/{showId}/assign/movie/{movieId}")
     public void assignMovieToMovie(
             @PathVariable int showId,
             @PathVariable int movieId) {

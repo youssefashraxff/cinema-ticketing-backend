@@ -116,6 +116,12 @@ public class ShowService {
                 .collect(Collectors.toList());
     }
 
+    public List<Show> getEmptyShows(){
+        return facade.shows().findAll().stream()
+                .filter(s -> s.getMovieId() == -1)
+                .collect(Collectors.toList());
+    }
+
     public ShowDTO getShow(int id) {
     Show show = facade.shows().findById(id)
             .orElseThrow(() -> new RuntimeException("Show not found"));

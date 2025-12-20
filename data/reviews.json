@@ -1,10 +1,36 @@
-[
-  {
-    "id": "r1",
-    "userId": "2",
-    "movieName": "Oppenheimer",
-    "rating": 5,
-    "comment": "Amazing movie!",
-    "timestamp": "2025-01-01T10:15:30"
-  }
-]
+[ {
+  "id" : "r1",
+  "userId" : 2,
+  "movieName" : "Oppenheimer",
+  "rating" : 5,
+  "comment" : "Amazing movie!",
+  "timestamp" : "2025-01-01T10:15:30"
+}, {
+  "id" : "47d54491-8f8e-4be0-9f9b-a84f7f40fdc6",
+  "userId" : 2,
+  "movieName" : "Oppenheimer",
+  "rating" : 5,
+  "comment" : "Amazing movie!",
+  "timestamp" : "2025-12-20T08:45:44"
+}, {
+  "id" : "5712190b-a4c6-4e1e-aaa2-51d1c70877f1",
+  "userId" : 2,
+  "movieName" : "Oppenheimer",
+  "rating" : 4,
+  "comment" : "the best ever",
+  "timestamp" : "2025-12-20T08:48:08"
+}, {
+  "id" : "df3bdc34-51a1-46b5-abb6-5f2fe7de85dc",
+  "userId" : 2,
+  "movieName" : "Oppenheimer",
+  "rating" : 3,
+  "comment" : "Very bad",
+  "timestamp" : "2025-12-20T08:49:58"
+}, {
+  "id" : "7a73ab69-20df-4bc1-b3c2-6a22c8a600d6",
+  "userId" : 2,
+  "movieName" : "Oppenheimer",
+  "rating" : 4,
+  "comment" : "very good",
+  "timestamp" : "2025-12-20T08:50:19"
+} ]

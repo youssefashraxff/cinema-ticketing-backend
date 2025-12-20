@@ -1,15 +1,18 @@
 package com.example.cinematicketingbackend.model;
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 public class Review {
     private String id;
-    private String userId;
+    private int userId;
     private String movieName;
     private int rating;
     private String comment;
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime timestamp;
 
-    public Review(String id, String userId, String movieName, int rating, String comment) {
+    public Review(String id, int userId, String movieName, int rating, String comment) {
         this.id = id;
         this.userId = userId;
         this.movieName = movieName;
@@ -25,7 +28,7 @@ public class Review {
         this.id = id;
     }
 
-    public void setUserId(String userId) {
+    public void setUserId(int userId) {
         this.userId = userId;
     }
 
@@ -49,7 +52,7 @@ public class Review {
         return id;
     }
 
-    public String getUserId() {
+    public int getUserId() {
         return userId;
     }
 

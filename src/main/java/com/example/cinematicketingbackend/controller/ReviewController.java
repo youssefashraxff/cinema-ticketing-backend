@@ -1,11 +1,10 @@
-
-
 package com.example.cinematicketingbackend.controller;
 
 import java.util.List;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -23,19 +22,13 @@ public class ReviewController {
         this.reviewService = reviewService;
     }
 
-    // Add a review
     @PostMapping
-    public Review addReview(
-            @RequestParam String movieName,
-            @RequestParam String userId,
-            @RequestParam int rating,
-            @RequestParam(required = false) String comment
-    ) {
+    public Review addReview(@RequestBody Review review) {
         return reviewService.addReview(
-                movieName,
-                userId,
-                rating,
-                comment
+                review.getMovieName(),
+                review.getUserId(),
+                review.getRating(),
+                review.getComment()
         );
     }
 
