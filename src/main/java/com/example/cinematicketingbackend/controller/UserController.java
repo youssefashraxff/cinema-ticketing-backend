@@ -31,17 +31,15 @@ public class UserController {
         return userService.registerUser(
                 body.get("email"),
                 body.get("password"),
-                body.get("username"),
-                body.get("role")
+                body.get("username")
         );
     }
 
     @PostMapping("/login")
     public AuthResponse login(
-            @RequestParam String email,
-            @RequestParam String password) {
+            @RequestBody Map<String, String> body) {
 
-        return userService.login(email, password);
+        return userService.login(body.get("email"), body.get("password"));
     }
 
     @GetMapping("/{userId}")

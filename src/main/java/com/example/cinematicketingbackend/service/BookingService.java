@@ -28,7 +28,7 @@ public class BookingService {
         return facade.bookings().findAll();
     }
 
-    public Booking bookSeats(int customerId,int movieId,int showId,List<Seat> requestedSeats) {
+    public Booking bookSeats(int customerId,int movieId,int showId,List<Seat> requestedSeats,String paymentType) {
 
         if (requestedSeats == null || requestedSeats.isEmpty()) {
             throw new InvalidBookingException("No seats selected");
@@ -70,6 +70,7 @@ public class BookingService {
                                         "yyyy-MM-dd HH:mm:ss")))
                 .seats(requestedSeats)
                 .status("CONFIRMED")
+                .paymentType(paymentType)
                 .build();
 
         // Persist booking

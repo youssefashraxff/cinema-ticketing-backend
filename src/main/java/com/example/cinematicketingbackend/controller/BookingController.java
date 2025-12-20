@@ -35,6 +35,7 @@ public class BookingController {
         int customerId = (int) body.get("customerId");
         int movieId = (int) body.get("movieId");
         int showId = (int) body.get("showId");
+        String paymentType = (String) body.get("paymentType");
         
 
         @SuppressWarnings("unchecked")
@@ -52,7 +53,8 @@ public class BookingController {
                 customerId,
                 movieId,
                 showId,
-                seats
+                seats,
+                paymentType
         );
     }
 

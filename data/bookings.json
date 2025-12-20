@@ -15,5 +15,25 @@
     "row" : "A",
     "number" : 2,
     "seatId" : "A2"
-  } ]
+  } ],
+  "paymentType" : null
+}, {
+  "bookingId" : 2,
+  "customerId" : 2,
+  "movieId" : 1,
+  "showId" : 2,
+  "numberOfSeats" : 2,
+  "totalPrice" : 200.0,
+  "bookingTime" : "2025-12-20 07:47:55",
+  "status" : "CONFIRMED",
+  "seats" : [ {
+    "row" : "C",
+    "number" : 2,
+    "seatId" : "C2"
+  }, {
+    "row" : "C",
+    "number" : 3,
+    "seatId" : "C3"
+  } ],
+  "paymentType" : "CARD"
 } ]

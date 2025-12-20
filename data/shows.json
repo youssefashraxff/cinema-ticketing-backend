@@ -1,7 +1,67 @@
-[ {
-  "showId" : 1,
-  "movieId" : 1,
-  "startTime" : "2025-01-01 18:00",
-  "finishTime" : "2025-01-01 21:00",
-  "hallId" : 1
-} ]
+[
+  {
+    "showId": 1,
+    "movieId": 1,
+    "startTime": "2025-01-01 12:00",
+    "finishTime": "2025-01-01 15:00",
+    "hallId": 1
+  },
+  {
+    "showId": 2,
+    "movieId": 1,
+    "startTime": "2025-01-01 18:00",
+    "finishTime": "2025-01-01 21:00",
+    "hallId": 1
+  },
+  {
+    "showId": 3,
+    "movieId": 1,
+    "startTime": "2025-01-01 22:00",
+    "finishTime": "2025-01-02 01:00",
+    "hallId": 1
+  },
+
+  {
+    "showId": 4,
+    "movieId": 1,
+    "startTime": "2025-01-02 12:00",
+    "finishTime": "2025-01-02 15:00",
+    "hallId": 1
+  },
+  {
+    "showId": 5,
+    "movieId": 1,
+    "startTime": "2025-01-02 18:00",
+    "finishTime": "2025-01-02 21:00",
+    "hallId": 1
+  },
+  {
+    "showId": 6,
+    "movieId": 1,
+    "startTime": "2025-01-02 22:00",
+    "finishTime": "2025-01-03 01:00",
+    "hallId": 1
+  },
+
+  {
+    "showId": 7,
+    "movieId": 1,
+    "startTime": "2025-01-03 12:00",
+    "finishTime": "2025-01-03 15:00",
+    "hallId": 1
+  },
+  {
+    "showId": 8,
+    "movieId": 1,
+    "startTime": "2025-01-03 18:00",
+    "finishTime": "2025-01-03 21:00",
+    "hallId": 1
+  },
+  {
+    "showId": 9,
+    "movieId": 1,
+    "startTime": "2025-01-03 21:00",
+    "finishTime": "2025-01-04 00:00",
+    "hallId": 1
+  }
+]

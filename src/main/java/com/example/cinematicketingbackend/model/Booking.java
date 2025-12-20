@@ -14,6 +14,9 @@ public class Booking {
     private String status; // "CONFIRMED", "CANCELLED", "PENDING"
     private List<Seat> seats;
 
+    private String paymentType;
+  
+
     public Booking() {
     this.bookingId = 0;
     this.customerId = 0;
@@ -36,6 +39,8 @@ public class Booking {
         this.bookingTime = builder.bookingTime;
         this.seats = builder.seats;
         this.status = builder.status;
+        this.paymentType = builder.paymentType;
+   
     }
 
     public static class Builder {
@@ -49,6 +54,8 @@ public class Booking {
         private String bookingTime;
         private String status = "PENDING";
         private List<Seat> seats;
+        private String paymentType;
+      
 
         public Builder bookingId(int bookingId) {
             this.bookingId = bookingId;
@@ -94,6 +101,13 @@ public class Booking {
             this.status = status;
             return this;
         }
+        
+        public Builder paymentType(String paymentType) {
+            this.paymentType = paymentType;
+            return this;
+        }
+
+     
 
         public Booking build() {
             return new Booking(this);
@@ -129,6 +143,16 @@ public class Booking {
     public String getStatus() {
         return status;
     }
+
+    public String getPaymentType() {
+        return paymentType;
+    }
+
+    public void setPaymentType(String paymentType) {
+        this.paymentType = paymentType;
+    }
+
+   
 
     // Setters
     public void setBookingId(int bookingId) {
@@ -170,6 +194,8 @@ public class Booking {
                 ", totalPrice=" + totalPrice +
                 ", bookingTime='" + bookingTime + '\'' +
                 ", status='" + status + '\'' +
+                ", paymentType='" + paymentType + '\'' +
+               
                 '}';
     }
 

@@ -12,5 +12,19 @@
     "password": "1234",
     "email": "ali.nasr14@icloud.com",
     "role": "USER"
+  },
+  {
+    "id": 3,
+    "username": "youssef",
+    "password": "1234",
+    "email": "youssef@email.com",
+    "role": "USER"
+  },
+  {
+    "id": 5,
+    "username": "admin",
+    "password": "admin",
+    "email": "admin@email.com",
+    "role": "ADMIN"
   }
 ]

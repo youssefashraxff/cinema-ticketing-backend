@@ -48,10 +48,11 @@ public class MovieCategoryFlyweigth {
         if (categoryCache.containsKey(normalizedType)) {
             return categoryCache.get(normalizedType);
         }
-
-        // For predefined categories, enforce the fixed values
-        throw new InvalidCategoryException("Category type '" + type + "' is not a valid predefined category. " +
-            "Valid categories are: action, horror, romance, comedy, drama, cartoon");
+        else{
+            MovieCategoryFlyweight newcategory = new MovieCategoryFlyweight(normalizedType, ageRestriction);
+            categoryCache.put(normalizedType, newcategory);
+            return categoryCache.get(normalizedType);
+        }
     }
 
     public static MovieCategoryFlyweight getMovieCategory(String type) {
@@ -81,4 +82,3 @@ public class MovieCategoryFlyweigth {
         return categoryCache.keySet();
     }
 }
-

@@ -6,9 +6,11 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
+import com.example.cinematicketingbackend.dto.ShowDTO;
 import com.example.cinematicketingbackend.exception.InvalidBookingException;
 import com.example.cinematicketingbackend.exception.InvalidHallStatusException;
 import com.example.cinematicketingbackend.model.Hall;
+import com.example.cinematicketingbackend.model.Movie;
 import com.example.cinematicketingbackend.model.Seat;
 import com.example.cinematicketingbackend.model.Show;
 import com.example.cinematicketingbackend.repository.FacadeRepository;
@@ -96,17 +98,44 @@ public class ShowService {
         facade.shows().delete(showId);
     }
 
-    public List<Show> getAllShows() {
-        return facade.shows().findAll();
+    public List<ShowDTO> getAllShows() {
+        return facade.shows().findAll().stream()
+                .map(show -> {
+                    return new ShowDTO(
+                            show.getShowId(),
+                            show.getMovieId() > 0
+                                    ? facade.movies().findById(show.getMovieId()).orElse(null)
+                                    : null,
+                            show.getHallId() > 0
+                                    ? facade.halls().findById(show.getHallId()).orElse(null)
+                                    : null,
+                            show.getStartTime(),
+                            show.getFinishTime()
+                    );
+                })
+                .collect(Collectors.toList());
     }
 
-    public Show getShow(int showId) {
-        return facade.shows()
-                .findById(showId)
-                .orElseThrow(() ->
-                        new IllegalArgumentException(
-                                "Show not found: " + showId));
-    }
+    public ShowDTO getShow(int id) {
+    Show show = facade.shows().findById(id)
+            .orElseThrow(() -> new RuntimeException("Show not found"));
+
+    Movie movie = facade.movies()
+            .findById(show.getMovieId())
+            .orElseThrow(() -> new RuntimeException("Movie not found"));
+
+    Hall hall = facade.halls()
+            .findById(show.getHallId())
+            .orElseThrow(() -> new RuntimeException("Hall not found"));
+
+    return new ShowDTO(
+            show.getShowId(),
+            movie,
+            hall,
+            show.getStartTime(),
+            show.getFinishTime()
+    );
+}
     
     public List<Show> getShowsByMovie(int MovieId){
         return facade.shows().findAll().stream()
