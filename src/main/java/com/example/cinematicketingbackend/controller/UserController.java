@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.cinematicketingbackend.dto.AuthResponse;
 import com.example.cinematicketingbackend.model.User;
 import com.example.cinematicketingbackend.service.UserService;
 
@@ -26,21 +27,19 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public User register(@RequestBody Map<String, String> body) {
+    public AuthResponse register(@RequestBody Map<String, String> body) {
         return userService.registerUser(
                 body.get("email"),
                 body.get("password"),
-                body.get("username"),
-                body.get("role")
+                body.get("username")
         );
     }
 
     @PostMapping("/login")
-    public User login(
-            @RequestParam String email,
-            @RequestParam String password) {
+    public AuthResponse login(
+            @RequestBody Map<String, String> body) {
 
-        return userService.login(email, password);
+        return userService.login(body.get("email"), body.get("password"));
     }
 
     @GetMapping("/{userId}")

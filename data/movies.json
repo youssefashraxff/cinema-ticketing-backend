@@ -1,13 +1,15 @@
-[ {
-  "movieId" : 1,
-  "name" : "Inception",
-  "duration" : 148,
-  "language" : "English",
-  "rating" : 8.8,
-  "movieDescription" : "Dream within a dream",
-  "trailerURL" : "https://trailer.link",
-  "verticalPoster" : "v.jpg",
-  "horizontalPoster" : "h.jpg",
-  "categoryType" : "drama",
-  "ageRestriction" : 7
-} ]
+[
+  {
+    "movieId": 1,
+    "name": "Oppenheimer",
+    "duration": 180,
+    "language": "English",
+    "rating": 8.8,
+    "movieDescription": "The story of J. Robert Oppenheimer's role in the development of the atomic bomb during World War II.",
+    "trailerURL": "https://www.themoviedb.org/video/play?key=bK6ldnjE3Y0",
+    "verticalPoster": "https://media.themoviedb.org/t/p/w440_and_h660_face/8Gxv8gSFCU0XGDykEGv7zR1n2ua.jpg",
+    "horizontalPoster": "https://media.themoviedb.org/t/p/w1066_and_h600_face/ycnO0cjsAROSGJKuMODgRtWsHQw.jpg",
+    "categoryType": "drama",
+    "ageRestriction": 16
+  }
+]

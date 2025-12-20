@@ -4,15 +4,18 @@ import java.util.List;
  * Represents a booking in the cinema ticketing system.
  */
 public class Booking {
-    private final int bookingId;
-    private final int customerId;
-    private final int movieId;
-    private final int showId;
-    private final int numberOfSeats;
-    private final double totalPrice;
-    private final String bookingTime; // Format: "yyyy-MM-dd HH:mm:ss"
+    private int bookingId;
+    private int customerId;
+    private int movieId;
+    private int showId;
+    private int numberOfSeats;
+    private double totalPrice;
+    private String bookingTime; // Format: "yyyy-MM-dd HH:mm:ss"
     private String status; // "CONFIRMED", "CANCELLED", "PENDING"
-    private final List<Seat> seats;
+    private List<Seat> seats;
+
+    private String paymentType;
+  
 
     public Booking() {
     this.bookingId = 0;
@@ -25,14 +28,7 @@ public class Booking {
     this.seats = null;
 }
 
-    public List<Seat> getSeats() {
-        return seats;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
+    
     private Booking(Builder builder) {
         this.bookingId = builder.bookingId;
         this.customerId = builder.customerId;
@@ -43,6 +39,8 @@ public class Booking {
         this.bookingTime = builder.bookingTime;
         this.seats = builder.seats;
         this.status = builder.status;
+        this.paymentType = builder.paymentType;
+   
     }
 
     public static class Builder {
@@ -56,6 +54,8 @@ public class Booking {
         private String bookingTime;
         private String status = "PENDING";
         private List<Seat> seats;
+        private String paymentType;
+      
 
         public Builder bookingId(int bookingId) {
             this.bookingId = bookingId;
@@ -101,6 +101,13 @@ public class Booking {
             this.status = status;
             return this;
         }
+        
+        public Builder paymentType(String paymentType) {
+            this.paymentType = paymentType;
+            return this;
+        }
+
+     
 
         public Booking build() {
             return new Booking(this);
@@ -108,6 +115,10 @@ public class Booking {
     }
 
     // Getters
+    public List<Seat> getSeats() {
+        return seats;
+    }
+    
     public int getBookingId() {
         return bookingId;
     }
@@ -133,6 +144,45 @@ public class Booking {
         return status;
     }
 
+    public String getPaymentType() {
+        return paymentType;
+    }
+
+    public void setPaymentType(String paymentType) {
+        this.paymentType = paymentType;
+    }
+
+   
+
+    // Setters
+    public void setBookingId(int bookingId) {
+        this.bookingId = bookingId;
+    }
+    public void setCustomerId(int customerId) {
+        this.customerId = customerId;
+    }
+    public void setMovieId(int movieId) {
+        this.movieId = movieId;
+    }
+    public void setShowId(int showId) {
+        this.showId = showId;
+    }
+    public void setStatus(String status) {
+        this.status = status;
+    }
+    public void setBookingTime(String bookingTime) {
+        this.bookingTime = bookingTime;
+    }
+    public void setNumberOfSeats(int numberOfSeats) {
+        this.numberOfSeats = numberOfSeats;
+    }
+    public void setTotalPrice(double totalPrice) {
+        this.totalPrice = totalPrice;
+    }
+    public void setSeats(List<Seat> seats) {
+        this.seats = seats;
+    }
+
     @Override
     public String toString() {
         return "Booking{" +
@@ -144,6 +194,8 @@ public class Booking {
                 ", totalPrice=" + totalPrice +
                 ", bookingTime='" + bookingTime + '\'' +
                 ", status='" + status + '\'' +
+                ", paymentType='" + paymentType + '\'' +
+               
                 '}';
     }
 

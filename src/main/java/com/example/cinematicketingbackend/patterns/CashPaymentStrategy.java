@@ -1,15 +1,15 @@
 package com.example.cinematicketingbackend.patterns;
+import com.example.cinematicketingbackend.dto.CashPaymentDto;
 
-public class CashPaymentStrategy implements PaymentStrategy {
+
+import org.springframework.stereotype.Service;
+
+@Service
+public class CashPaymentStrategy
+        implements PaymentStrategyInterface<CashPaymentDto> {
+
     @Override
-    public boolean pay(double amount) {
-
-        if (amount <= 0) {
-            System.out.println("Invalid payment amount");
-            return false;
-        }
-
-        System.out.println("Your Payment will processd when you come.\n Your total is: " + amount );
-        return false;  //logically lesa he didn't pay(payment will be processed on his movie date)
+    public void pay(CashPaymentDto request) {
+        // mark booking as PAY_ON_DELIVERY
     }
 }

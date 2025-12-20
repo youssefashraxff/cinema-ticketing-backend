@@ -11,19 +11,24 @@ import com.example.cinematicketingbackend.model.Booking;
 import com.example.cinematicketingbackend.model.Hall;
 import com.example.cinematicketingbackend.model.Seat;
 import com.example.cinematicketingbackend.model.Show;
+import com.example.cinematicketingbackend.patterns.observer.BookingSubject;
 import com.example.cinematicketingbackend.repository.FacadeRepository;
 
 @Service
 public class BookingService {
 
     private final FacadeRepository facade;
+    private final BookingSubject bookingSubject;
     
-    public BookingService(FacadeRepository facade) {
-        this.facade = facade;
-        
+   public BookingService(FacadeRepository facade, BookingSubject bookingSubject) {
+    this.facade = facade;
+    this.bookingSubject = bookingSubject;
+}
+    public List<Booking> getAllBookings() {
+        return facade.bookings().findAll();
     }
 
-    public Booking bookSeats(int customerId,int movieId,int showId,List<Seat> requestedSeats) {
+    public Booking bookSeats(int customerId,int movieId,int showId,List<Seat> requestedSeats,String paymentType) {
 
         if (requestedSeats == null || requestedSeats.isEmpty()) {
             throw new InvalidBookingException("No seats selected");
@@ -65,12 +70,27 @@ public class BookingService {
                                         "yyyy-MM-dd HH:mm:ss")))
                 .seats(requestedSeats)
                 .status("CONFIRMED")
+                .paymentType(paymentType)
                 .build();
 
         // Persist booking
         facade.bookings().save(booking);
+        bookingSubject.notifyObservers(booking);
 
         return booking;
+    }
+
+    public int getRemainingSeats(int showId) {
+        int bookedSeats = facade.bookings()
+                .findByShowId(showId)
+                .stream()
+                .filter(b -> "CONFIRMED".equals(b.getStatus()))
+                .mapToInt(Booking::getNumberOfSeats)
+                .sum();
+
+        Show show = facade.shows().findById(showId).orElseThrow();
+        Hall hall = facade.halls().findById(show.getHallId()).orElseThrow();
+        return hall.getCapacityOfSeats() - bookedSeats;
     }
 
     public List<Booking> getBookingsByCustomer(int customerId) {
@@ -94,29 +114,5 @@ public class BookingService {
         facade.bookings().save(booking);
     }
 
-    public int getRemainingSeats(int showId) {
-
-        Show show = facade.shows()
-                .findById(showId)
-                .orElseThrow(() ->
-                        new InvalidBookingException("Show not found: " + showId));
-
-        if (show.getHallId() < 0) {
-            throw new InvalidBookingException("Show is not assigned to a hall yet");
-        }
-
-        Hall hall = facade.halls()
-                .findById(show.getHallId())
-                .orElseThrow(() ->
-                        new InvalidBookingException("Hall not found for show"));
-
-        int bookedSeats = facade.bookings()
-                .findByShowId(showId)
-                .stream()
-                .filter(b -> "CONFIRMED".equals(b.getStatus()))
-                .mapToInt(Booking::getNumberOfSeats)
-                .sum();
-
-        return hall.getCapacity() - bookedSeats;
-    }
+    
 }

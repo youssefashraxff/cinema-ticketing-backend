@@ -2,6 +2,9 @@ package com.example.cinematicketingbackend.model;
 
 import java.util.Objects;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+@JsonIgnoreProperties(ignoreUnknown = true)
+
 public class Seat {
     private char row;      // 'A' to 'E'
     private int number;    // 1 to 8
@@ -35,4 +38,8 @@ public class Seat {
     public int hashCode() {
         return Objects.hash(row, number);
     }
+    @Override
+    public String toString() {
+    return row + String.valueOf(number);
+}
 }

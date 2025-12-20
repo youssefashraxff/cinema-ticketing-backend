@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.cinematicketingbackend.dto.ShowDTO;
+import com.example.cinematicketingbackend.model.Seat;
 import com.example.cinematicketingbackend.model.Show;
 import com.example.cinematicketingbackend.service.ShowService;
 
@@ -25,10 +27,14 @@ public class ShowController {
     } 
 
     @GetMapping
-    public List<Show> getAllShows() {
-
+    public List<ShowDTO> getAllShows() {
         return showService.getAllShows();
     }
+    @GetMapping("/{showId}")
+    public ShowDTO getShowById(@PathVariable int showId) {
+        return showService.getShow(showId);
+    }
+    
 
     @PostMapping
     public Show createShow(
@@ -67,5 +73,10 @@ public class ShowController {
     @GetMapping("/hall/{hallId}")
     public List<Show> getShowsByHall(@PathVariable int hallId) {
         return showService.getShowsByHall(hallId);
+    }
+
+    @GetMapping("/{showId}/seats")
+    public List<Seat> getRemainList(@PathVariable int showId) {
+        return showService.getRemainingSeats(showId);
     }
 }

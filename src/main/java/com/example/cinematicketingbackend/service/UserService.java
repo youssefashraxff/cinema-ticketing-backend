@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.example.cinematicketingbackend.dto.AuthResponse;
 import com.example.cinematicketingbackend.model.User;
 import com.example.cinematicketingbackend.repository.FacadeRepository;
 
@@ -19,7 +20,16 @@ public class UserService {
     }
 
 
-    public User registerUser(String email, String password , String username,String role) {
+    public AuthResponse registerUser(String email, String password, String username) {
+
+        if (email == null || email.isBlank()
+                || password == null || password.isBlank()
+                || username == null || username.isBlank()) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Email, username and password are required"
+            );
+        }
 
         boolean emailExists = facade.users()
                 .findAll()
@@ -27,8 +37,12 @@ public class UserService {
                 .anyMatch(u -> u.getEmail().equalsIgnoreCase(email));
 
         if (emailExists) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Email already exists");
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Email already exists"
+            );
         }
+
         int newUserId = facade.users()
                 .findAll()
                 .stream()
@@ -41,32 +55,42 @@ public class UserService {
                 username,
                 password,
                 email,
-                role
+                "USER"
         );
 
         facade.users().save(user);
-        return user;
+
+        String token = JwtService.generateToken(user);
+        return new AuthResponse(user, token);
     }
 
-    public User login(String email, String password) {
-        if (email == null || email.isBlank()) {
-            throw new IllegalArgumentException("Username is required");
-        }
+    public AuthResponse login(String email, String password) {
 
-        if (password == null || password.isBlank()) {
-            throw new IllegalArgumentException("Password is required");
+        if (email == null || email.isBlank() || password == null || password.isBlank()) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Email and password are required"
+            );
         }
 
         User user = facade.users()
                 .findByEmail(email)
                 .orElseThrow(() ->
-                        new IllegalArgumentException("Invalid username or password"));
+                        new ResponseStatusException(
+                                HttpStatus.UNAUTHORIZED,
+                                "Incorrect email or password"
+                        )
+                );
 
         if (!user.getPassword().equals(password)) {
-            throw new IllegalArgumentException("Invalid username or password");
+            throw new ResponseStatusException(
+                    HttpStatus.UNAUTHORIZED,
+                    "Incorrect email or password"
+            );
         }
 
-        return user;
+        String token = JwtService.generateToken(user);
+        return new AuthResponse(user, token);
     }
 
     public User getUserById(int userId) {

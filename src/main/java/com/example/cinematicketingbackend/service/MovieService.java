@@ -73,23 +73,7 @@ public class MovieService {
         facade.movies().deleteById(movieId);
     }
 
-    public void addShow(int movieId, Show show) {
-
-        facade.movies()
-                .findById(movieId)
-                .orElseThrow(() -> new MovieNotFoundException(movieId));
-
-        if (!TimeUtils.validateTimeFormat(show.getStartTime()) ||
-            !TimeUtils.validateTimeFormat(show.getFinishTime())) {
-            throw new InvalidSearchCriteriaException("Invalid time format");
-        }
-
-        if (!TimeUtils.isTimeAfter(show.getFinishTime(), show.getStartTime())) {
-            throw new InvalidSearchCriteriaException("Finish time must be after start time");
-        }
-
-        facade.shows().save(show);
-    }
+   
 
 
     public List<Movie> getAllMovies() {
@@ -101,6 +85,14 @@ public class MovieService {
                 .findById(movieId)
                 .orElseThrow(() -> new MovieNotFoundException(movieId));
     }
+
+    public Movie getMovieByName(String name) {
+        return facade.movies().findAll().stream()
+                .filter(m -> m.getName().equalsIgnoreCase(name))
+                .findFirst()
+                .orElseThrow(() -> new MovieNotFoundException(name));
+    }
+
 
     public List<Movie> getMoviesByCategory(String type) {
         if (type == null || type.isBlank()) return new ArrayList<>();

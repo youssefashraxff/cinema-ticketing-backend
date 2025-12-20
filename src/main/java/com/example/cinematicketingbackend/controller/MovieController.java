@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.cinematicketingbackend.model.Movie;
 import com.example.cinematicketingbackend.service.MovieService;
 
+
+
 @RestController
 @RequestMapping("/movies")
 public class MovieController {
@@ -60,6 +62,11 @@ public class MovieController {
     @GetMapping("/category")
     public List<Movie> getMoviesByCategory(@RequestParam String type) {
         return movieService.getMoviesByCategory(type);
+    }
+
+    @GetMapping("/search/name")
+    public Movie getMoviesByName(@RequestParam String name) {
+        return movieService.getMovieByName(name);
     }
 
     @GetMapping("/search/language")
